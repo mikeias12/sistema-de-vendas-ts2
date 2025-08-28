@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Vendas - Cultura Inglesa</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #dc2626;
+            --primary-hover: #b91c1c;
+            --primary-light: rgba(220, 38, 38, 0.1);
+            --secondary-color: #f1f5f9;
+            --background: #f8fafc;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #16a34a;
+            --success-light: rgba(22, 163, 74, 0.1);
+            --warning-color: #d97706;
+            --warning-light: rgba(217, 119, 6, 0.1);
+            --danger-color: #dc2626;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Login Form */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            padding: 1rem;
+        }
+
+        .login-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px -10px rgba(220, 38, 38, 0.3);
+            width: 100%;
+            max-width: 420px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 16px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 28px;
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--secondary-color);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .nav-tab:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .nav-tab.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-background);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-background);
+            padding: 2rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-color);
+        }
+
+        .stat-card.primary::before { background: var(--primary-color); }
+        .stat-card.success::before { background: var(--success-color); }
+        .stat-card.warning::before { background: var(--warning-color); }
+        .stat-card.secondary::before { background: var(--text-muted); }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        .btn-warning:hover {
+            background: #b45309;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: var(--success-light);
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background: var(--warning-light);
+            color: var(--warning-color);
+        }
+
+        .badge-primary {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        /* Sales List */
+        .sales-item,
+        .user-item {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: var(--card-background);
+            transition: var(--transition);
+        }
+
+        .sales-item:hover,
+        .user-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
+        }
+
+        .sales-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .sales-info {
+            flex: 1;
+        }
+
+        .sales-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .sales-details {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        /* Hidden content */
+        .tab-content {
+            display: none;
+            animation: fadeInContent 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Charts */
+        .chart-container {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 1rem;
+            height: 400px;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            background: var(--secondary-color);
+            height: 300px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filters > * {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border-left-color: #dc2626;
+        }
+
+        .alert-success {
+            background: var(--success-light);
+            color: var(--success-color);
+            border-left-color: var(--success-color);
+        }
+
+        .alert-warning {
+            background: var(--warning-light);
+            color: var(--warning-color);
+            border-left-color: var(--warning-color);
+        }
+
+        /* Export section */
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .export-card {
+            background: var(--card-background);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .export-card:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .export-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        /* Settings sections */
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+
+        .danger-zone {
+            background: rgba(239, 68, 68, 0.05);
+            border: 2px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .danger-zone h3 {
+            color: var(--danger-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+
+            .sales-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .export-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .filters > * {
+                min-width: unset;
+            }
+        }
+
+        /* Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <form class="login-form" onsubmit="handleLogin(event)">
+            <div class="login-header">
+                <div class="login-logo">CI</div>
+                <h1>Sistema de Vendas</h1>
+                <p style="color: var(--text-muted);">Cultura Inglesa</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" id="email" class="form-input" placeholder="exemplo@culturainglesa.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Senha</label>
+                <input type="password" id="password" class="form-input" placeholder="exemplo123" required>
+            </div>
+
+            <div id="loginError" class="alert alert-error" style="display: none;"></div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span id="loginSpinner" class="spinner" style="display: none;"></span>
+                <span id="loginText">Entrar</span>
+            </button>
+
+            <div style="background: var(--secondary-color); padding: 1rem; border-radius: 8px; margin-top: 1.5rem; font-size: 0.875rem;">
+                <p><strong>Credenciais de Teste:</strong></p>
+                <p>Email: -----</p>
+                <p>Senha: ----</p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" style="display: none;">
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <div class="logo">CI</div>
+                        <div>
+                            <h1>Sistema de Vendas</h1>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Cultura Inglesa</p>
+                        </div>
+                    </div>
+                    <div class="user-info">
+                        <span id="currentUser"></span>
+                        <button class="btn btn-secondary btn-sm" onclick="logout()">
+                            🚪 Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+                    <button class="nav-tab" onclick="showTab('sales')">💰 Vendas</button>
+                    <button id="usersTab" class="nav-tab" onclick="showTab('users')" style="display: none;">👥 Usuários</button>
+                    <button id="settingsTab" class="nav-tab" onclick="showTab('settings')" style="display: none;">⚙️ Configurações</button>
+                </div>
+            </nav>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-value" id="totalSales">0</div>
+                        <div class="stat-label">Total de Vendas</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-value" id="paidSales">0</div>
+                        <div class="stat-label">Vendas Pagas</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-value" id="pendingSales">0</div>
+                        <div class="stat-label">Vendas Pendentes</div>
+                    </div>
+                    <div class="stat-card secondary">
+                        <div class="stat-value" id="totalOperators">0</div>
+                        <div class="stat-label">Operadores Ativos</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">📈 Vendas por Equipe</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="teamChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">🎯 Status das Vendas</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🕒 Atividade Recente</h2>
+                    </div>
+                    <div class="card-content">
+                        <div id="recentActivity"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Tab -->
+            <div id="sales" class="tab-content">
+                <!-- Sales Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">➕ Registrar Nova Venda</h2>
+                    </div>
+                    <div class="card-content">
+                        <form onsubmit="addSale(event)">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">🔗 Link do HubSpot *</label>
+                                    <input type="url" id="hubspotLink" class="form-input" placeholder="https://hubspot.com/..." required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">🆔 ID do CS *</label>
+                                    <input type="text" id="csId" class="form-input" placeholder="CS001" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">👤 Nome do Aluno *</label>
+                                    <input type="text" id="studentName" class="form-input" placeholder="Nome completo do aluno" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">📅 Data de Nascimento *</label>
+                                    <input type="date" id="birthDate" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">👨‍👩‍👧 Nome do Responsável</label>
+                                    <input type="text" id="responsibleName" class="form-input" placeholder="Se o aluno for menor de idade">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">📚 Nome do Curso *</label>
+                                    <input type="text" id="courseName" class="form-input" placeholder="Digite o nome do curso" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">👥 Equipe *</label>
+                                <select id="team" class="form-select" required>
+                                    <option value="">Selecione uma equipe</option>
+                                    <option value="Equipe Kaique">Equipe Kaique</option>
+                                    <option value="Equipe Ivan">Equipe Ivan</option>
+                                    <option value="Equipe Ana paula">Equipe Ana paula</option>
+                                    <option value="Equipe Ana (M)">Equipe Ana (M)</option>
+                                    <option value="Equipe Admin">Equipe Admin</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                ✅ Registrar Venda
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Sales Filters -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🔍 Filtros</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="filters">
+                            <input type="text" id="searchSales" class="form-input" placeholder="🔎 Buscar por nome..." onkeyup="filterSales()">
+                            <select id="statusFilter" class="form-select" onchange="filterSales()">
+                                <option value="all">Todos os Status</option>
+                                <option value="paid">✅ Pagas</option>
+                                <option value="pending">⏳ Pendentes</option>
+                            </select>
+                            <select id="teamFilter" class="form-select" onchange="filterSales()">
+                                <option value="all">Todas as Equipes</option>
+                                <option value="Equipe Kaique">Equipe kaique</option>
+                                <option value="Equipe Ivan">Equipe Ivan</option>
+                                <option value="Equipe Ana paula">Equipe Ana paula</option>
+                                <option value="Equipe Ana (M)">Equipe Ana (M)</option>
+                                <option value="Equipe Admin">Equipe Admin</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="exportSalesData()">
+                                📄 Exportar Lista
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales List -->
+                <div id="salesList"></div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users" class="tab-content">
+                <div class="card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <h2 class="card-title">👥 Gerenciamento de Usuários</h2>
+                        <button class="btn btn-primary" onclick="showAddUserModal()">
+                            ➕ Adicionar Usuário
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <div id="usersList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">📊 Exportação de Dados</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="export-grid">
+                                <div class="export-card" onclick="exportSalesData()">
+                                    <div class="export-icon">📄</div>
+                                    <h3>Exportar Vendas</h3>
+                                    <p>Arquivo CSV com todas as vendas</p>
+                                </div>
+                                <div class="export-card" onclick="exportUsersData()">
+                                    <div class="export-icon">👥</div>
+                                    <h3>Exportar Usuários</h3>
+                                    <p>Arquivo CSV com todos os usuários</p>
+                                </div>
+                                <div class="export-card" onclick="backupSystemData()">
+                                    <div class="export-icon">💾</div>
+                                    <h3>Backup Completo</h3>
+                                    <p>Arquivo JSON com todos os dados</p>
+                                </div>
+                                <div class="export-card" onclick="generateReport()">
+                                    <div class="export-icon">📈</div>
+                                    <h3>Relatório Detalhado</h3>
+                                    <p>PDF com análise completa</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">🔧 Configurações do Sistema</h2>
+                        </div>
+                        <div class="card-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                                <div>
+                                    <h4>📧 Notificações por Email</h4>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0;">
+                                        <input type="checkbox" id="emailNotifications" checked>
+                                        Ativar notificações
+                                    </label>
+                                </div>
+                                <div>
+                                    <h4>🔄 Backup Automático</h4>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0;">
+                                        <input type="checkbox" id="autoBackup" checked>
+                                        Backup diário
+                                    </label>
+                                </div>
+                                <div>
+                                    <h4>📊 Relatórios</h4>
+                                    <select class="form-select" id="reportFrequency">
+                                        <option>Diário</option>
+                                        <option selected>Semanal</option>
+                                        <option>Mensal</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <h4>🎨 Tema</h4>
+                                    <select class="form-select" id="theme">
+                                        <option selected>Claro</option>
+                                        <option>Escuro</option>
+                                        <option>Automático</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 1rem;">
+                                💾 Salvar Configurações
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">📈 Estatísticas Avançadas</h2>
+                        </div>
+                        <div class="card-content">
+                            <div id="advancedStats">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                    <div style="text-align: center; padding: 1rem; background: var(--success-light); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success-color);" id="conversionRate">0%</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">Taxa de Conversão</div>
+                                    </div>
+                                    <div style="text-align: center; padding: 1rem; background: var(--primary-light); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);" id="avgTicket">R$ 0</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">Ticket Médio</div>
+                                    </div>
+                                    <div style="text-align: center; padding: 1rem; background: var(--warning-light); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--warning-color);" id="topPerformer">-</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">Top Vendedor</div>
+                                    </div>
+                                    <div style="text-align: center; padding: 1rem; background: var(--secondary-color); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--text-color);" id="bestTeam">-</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">Melhor Equipe</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="danger-zone">
+                        <h3>⚠️ Área de Risco</h3>
+                        <p style="margin-bottom: 1rem; color: var(--text-muted);">
+                            Estas ações são irreversíveis. Use com cuidado.
+                        </p>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <button class="btn btn-warning" onclick="clearOldData()">
+                                🗑️ Limpar Dados Antigos
+                            </button>
+                            <button class="btn btn-danger" onclick="resetSystem()">
+                                🔄 Resetar Sistema
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">ℹ️ Informações do Sistema</h2>
+                        </div>
+                        <div class="card-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.9rem;">
+                                <div>
+                                    <strong>Versão:</strong> 2.0.0
+                                </div>
+                                <div>
+                                    <strong>Última atualização:</strong> <span id="lastUpdate"></span>
+                                </div>
+                                <div>
+                                    <strong>Total de registros:</strong> <span id="totalRecords">0</span>
+                                </div>
+                                <div>
+                                    <strong>Espaço usado:</strong> <span id="storageUsed">0 KB</span>
+                                </div>
+                                <div>
+                                    <strong>Desenvolvido para:</strong> Tree smart-CNC
+                                </div>
+                                <div>
+                                    <strong>Suporte:</strong> mikeiascontanova@gmail.com
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="userModalTitle">➕ Adicionar Usuário</h3>
+                <button class="modal-close" onclick="closeUserModal()">&times;</button>
+            </div>
+            <form onsubmit="saveUser(event)">
+                <div class="form-group">
+                    <label class="form-label">👤 Senha de login </label>
+                    <input type="text" id="userName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📧 Email</label>
+                    <input type="email" id="userEmail" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">🎭 Função</label>
+                    <select id="userRole" class="form-select" onchange="toggleTeamField()" required>
+                        <option value="operator">Operador</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <div class="form-group" id="teamField">
+                    <label class="form-label">👥 Equipe</label>
+                    <select id="userTeam" class="form-select">
+                        <option value="">Selecione uma equipe</option>
+                        <option value="Equipe Kaique">Equipe Kaique</option>
+                        <option value="Equipe Ivan">Equipe Ivan</option>
+                        <option value="Equipe Ana paula">Equipe Ana paula</option>
+                        <option value="Equipe Ana (M)">Equipe Ana (M)</option>
+                        <option value="Equipe ADMIN">Equipe ADMIN</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        💾 Salvar
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeUserModal()" style="flex: 1;">
+                        ❌ Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let sales = JSON.parse(localStorage.getItem('sales') || '[]');
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
+        let editingUserId = null;
+        let teamChart = null;
+        let statusChart = null;
+
+        // Default admin credentials
+        const ADMIN_CREDENTIALS = {
+            email: 'admin@culturainglesa.com',
+            password: 'admin123'
+        };
+
+        // Default admin user
+        const ADMIN_USER = {
+            id: 'admin-001',
+            name: 'Administrador',
+            email: 'admin@culturainglesa.com',
+            role: 'admin',
+            team: 'Administração',
+            createdAt: new Date().toISOString()
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                showMainApp();
+            }
+            
+            // Initialize system info
+            updateSystemInfo();
+        });
+
+        // Login function
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            const spinner = document.getElementById('loginSpinner');
+            const text = document.getElementById('loginText');
+
+            // Show loading state
+            spinner.style.display = 'inline-block';
+            text.textContent = 'Entrando...';
+
+            setTimeout(() => {
+                // Check admin credentials
+                if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+                    currentUser = ADMIN_USER;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    showMainApp();
+                    return;
+                }
+
+                // Check other users
+                const foundUser = users.find(u => u.email === email);
+                if (foundUser) {
+                    currentUser = foundUser;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    showMainApp();
+                    return;
+                }
+
+                // Show error
+                errorDiv.textContent = 'Email ou senha incorretos';
+                errorDiv.style.display = 'block';
+                spinner.style.display = 'none';
+                text.textContent = 'Entrar';
+            }, 1000);
+        }
+
+        // Show main app
+        function showMainApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('currentUser').textContent = `${currentUser.name} - ${currentUser.role === 'admin' ? 'Administrador' : 'Operador'}`;
+            
+            // Show admin tabs
+            if (currentUser.role === 'admin') {
+                document.getElementById('usersTab').style.display = 'block';
+                document.getElementById('settingsTab').style.display = 'block';
+            }
+
+            updateDashboard();
+            renderSales();
+            renderUsers();
+            initializeCharts();
+            updateAdvancedStats();
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+                
+                // Reset form
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('loginError').style.display = 'none';
+                document.getElementById('loginSpinner').style.display = 'none';
+                document.getElementById('loginText').textContent = 'Entrar';
+            }
+        }
+
+        // Tab navigation
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Update nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update charts when dashboard is shown
+            if (tabName === 'dashboard') {
+                setTimeout(() => {
+                    updateCharts();
+                    updateAdvancedStats();
+                }, 100);
+            }
+        }
+
+        // Sales functions
+        function addSale(event) {
+            event.preventDefault();
+            
+            const newSale = {
+                id: Date.now().toString(),
+                hubspotLink: document.getElementById('hubspotLink').value,
+                csId: document.getElementById('csId').value,
+                studentName: document.getElementById('studentName').value,
+                birthDate: document.getElementById('birthDate').value,
+                responsibleName: document.getElementById('responsibleName').value,
+                courseName: document.getElementById('courseName').value,
+                team: document.getElementById('team').value,
+                operatorId: currentUser.id,
+                operatorName: currentUser.name,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+
+            sales.unshift(newSale);
+            localStorage.setItem('sales', JSON.stringify(sales));
+
+            // Reset form
+            event.target.reset();
+
+            showAlert('Venda registrada com sucesso!', 'success');
+            updateDashboard();
+            renderSales();
+            updateCharts();
+            updateAdvancedStats();
+        }
+
+        function toggleSaleStatus(saleId) {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem alterar o status das vendas.', 'error');
+                return;
+            }
+
+            const sale = sales.find(s => s.id === saleId);
+            if (sale) {
+                sale.status = sale.status === 'paid' ? 'pending' : 'paid';
+                localStorage.setItem('sales', JSON.stringify(sales));
+                showAlert('Status da venda atualizado!', 'success');
+                updateDashboard();
+                renderSales();
+                updateCharts();
+                updateAdvancedStats();
+            }
+        }
+
+        function deleteSale(saleId) {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem excluir vendas.', 'error');
+                return;
+            }
+
+            if (confirm('Tem certeza que deseja excluir esta venda?')) {
+                sales = sales.filter(s => s.id !== saleId);
+                localStorage.setItem('sales', JSON.stringify(sales));
+                showAlert('Venda excluída com sucesso!', 'success');
+                updateDashboard();
+                renderSales();
+                updateCharts();
+                updateAdvancedStats();
+            }
+        }
+
+        function filterSales() {
+            const searchTerm = document.getElementById('searchSales').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const teamFilter = document.getElementById('teamFilter').value;
+
+            const filtered = sales.filter(sale => {
+                const matchesSearch = sale.studentName.toLowerCase().includes(searchTerm) ||
+                                    sale.operatorName.toLowerCase().includes(searchTerm) ||
+                                    sale.courseName.toLowerCase().includes(searchTerm);
+                const matchesStatus = statusFilter === 'all' || sale.status === statusFilter;
+                const matchesTeam = teamFilter === 'all' || sale.team === teamFilter;
+                
+                return matchesSearch && matchesStatus && matchesTeam;
+            });
+
+            renderSalesFiltered(filtered);
+        }
+
+        function renderSales() {
+            renderSalesFiltered(sales);
+        }
+
+        function renderSalesFiltered(salesData) {
+            const salesList = document.getElementById('salesList');
+            
+            if (salesData.length === 0) {
+                salesList.innerHTML = '<div class="card"><div class="card-content" style="text-align: center; padding: 2rem;"><p style="color: var(--text-muted);">Nenhuma venda encontrada</p></div></div>';
+                return;
+            }
+
+            salesList.innerHTML = salesData.map(sale => `
+                <div class="sales-item">
+                    <div class="sales-header">
+                        <div class="sales-info">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                                <strong style="font-size: 1.1rem;">${sale.studentName}</strong>
+                                <span class="badge ${sale.status === 'paid' ? 'badge-success' : 'badge-warning'}">
+                                    ${sale.status === 'paid' ? '✅ Pago' : '⏳ Pendente'}
+                                </span>
+                            </div>
+                            <div class="sales-details">
+                                <div><strong>📚 Curso:</strong> ${sale.courseName}</div>
+                                <div><strong>👤 Operador:</strong> ${sale.operatorName} - ${sale.team}</div>
+                                <div><strong>📅 Data:</strong> ${new Date(sale.createdAt).toLocaleDateString('pt-BR')}</div>
+                                ${sale.responsibleName ? `<div><strong>👨‍👩‍👧 Responsável:</strong> ${sale.responsibleName}</div>` : ''}
+                                <div><strong>🆔 ID CS:</strong> ${sale.csId}</div>
+                                <div><strong>🔗 HubSpot:</strong> <a href="${sale.hubspotLink}" target="_blank" style="color: var(--primary-color);">Ver Link</a></div>
+                            </div>
+                        </div>
+                        <div class="sales-actions">
+                            ${currentUser.role === 'admin' ? `
+                                <button class="btn ${sale.status === 'paid' ? 'btn-warning' : 'btn-success'} btn-sm" 
+                                        onclick="toggleSaleStatus('${sale.id}')">
+                                    ${sale.status === 'paid' ? '⏳ Marcar Pendente' : '✅ Marcar Pago'}
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteSale('${sale.id}')">
+                                    🗑️ Excluir
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // User management functions
+        function showAddUserModal() {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem gerenciar usuários.', 'error');
+                return;
+            }
+
+            editingUserId = null;
+            document.getElementById('userModalTitle').textContent = '➕ Adicionar Usuário';
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userRole').value = 'operator';
+            document.getElementById('userTeam').value = '';
+            toggleTeamField();
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function editUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            editingUserId = userId;
+            document.getElementById('userModalTitle').textContent = '✏️ Editar Usuário';
+            document.getElementById('userName').value = user.name;
+            document.getElementById('userEmail').value = user.email;
+            document.getElementById('userRole').value = user.role;
+            document.getElementById('userTeam').value = user.team;
+            toggleTeamField();
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function deleteUser(userId) {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem excluir usuários.', 'error');
+                return;
+            }
+
+            if (userId === currentUser.id) {
+                showAlert('Você não pode excluir sua própria conta.', 'error');
+                return;
+            }
+
+            if (confirm('Tem certeza que deseja excluir este usuário?')) {
+                users = users.filter(u => u.id !== userId);
+                localStorage.setItem('users', JSON.stringify(users));
+                showAlert('Usuário excluído com sucesso!', 'success');
+                renderUsers();
+                updateDashboard();
+                updateAdvancedStats();
+            }
+        }
+
+        function saveUser(event) {
+            event.preventDefault();
+            
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem gerenciar usuários.', 'error');
+                return;
+            }
+
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const role = document.getElementById('userRole').value;
+            const team = role === 'admin' ? 'Administração' : document.getElementById('userTeam').value;
+
+            if (editingUserId) {
+                // Update existing user
+                const userIndex = users.findIndex(u => u.id === editingUserId);
+                if (userIndex !== -1) {
+                    users[userIndex] = { ...users[userIndex], name, email, role, team };
+                    showAlert('Usuário atualizado com sucesso!', 'success');
+                }
+            } else {
+                // Add new user
+                const newUser = {
+                    id: Date.now().toString(),
+                    name,
+                    email,
+                    role,
+                    team,
+                    createdAt: new Date().toISOString()
+                };
+                users.push(newUser);
+                showAlert('Usuário criado com sucesso!', 'success');
+            }
+
+            localStorage.setItem('users', JSON.stringify(users));
+            closeUserModal();
+            renderUsers();
+            updateDashboard();
+            updateAdvancedStats();
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('active');
+        }
+
+        function toggleTeamField() {
+            const role = document.getElementById('userRole').value;
+            const teamField = document.getElementById('teamField');
+            const teamSelect = document.getElementById('userTeam');
+            
+            if (role === 'admin') {
+                teamField.style.display = 'none';
+                teamSelect.required = false;
+            } else {
+                teamField.style.display = 'block';
+                teamSelect.required = true;
+            }
+        }
+
+        function renderUsers() {
+            const usersList = document.getElementById('usersList');
+            
+            if (currentUser.role !== 'admin') {
+                usersList.innerHTML = '<div class="alert alert-error">Acesso negado. Apenas administradores podem gerenciar usuários.</div>';
+                return;
+            }
+
+            if (users.length === 0) {
+                usersList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum usuário cadastrado</p>';
+                return;
+            }
+
+            usersList.innerHTML = users.map(user => `
+                <div class="user-item">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                            <strong style="font-size: 1.1rem;">${user.name}</strong>
+                            <span class="badge ${user.role === 'admin' ? 'badge-primary' : 'badge-secondary'}">
+                                ${user.role === 'admin' ? '👑 Admin' : '👤 Operador'}
+                            </span>
+                        </div>
+                        <div style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.5;">
+                            <div>📧 Email: ${user.email}</div>
+                            <div>👥 Equipe: ${user.team}</div>
+                            <div>📅 Criado em: ${new Date(user.createdAt).toLocaleDateString('pt-BR')}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-secondary btn-sm" onclick="editUser('${user.id}')">
+                            ✏️ Editar
+                        </button>
+                        ${user.id !== currentUser.id ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${user.id}')">🗑️ Excluir</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Dashboard functions
+        function updateDashboard() {
+            const totalSales = sales.length;
+            const paidSales = sales.filter(s => s.status === 'paid').length;
+            const pendingSales = sales.filter(s => s.status === 'pending').length;
+            const totalOperators = users.filter(u => u.role === 'operator').length;
+
+            document.getElementById('totalSales').textContent = totalSales;
+            document.getElementById('paidSales').textContent = paidSales;
+            document.getElementById('pendingSales').textContent = pendingSales;
+            document.getElementById('totalOperators').textContent = totalOperators;
+
+            updateRecentActivity();
+        }
+
+        function updateRecentActivity() {
+            const recentActivity = document.getElementById('recentActivity');
+            const recentSales = sales
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 5);
+
+            if (recentSales.length === 0) {
+                recentActivity.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhuma atividade recente</p>';
+                return;
+            }
+
+            recentActivity.innerHTML = recentSales.map(sale => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--secondary-color); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <div>
+                        <div style="font-weight: 600;">${sale.studentName}</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">${sale.operatorName} • ${sale.team}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.875rem; font-weight: 600; color: ${sale.status === 'paid' ? 'var(--success-color)' : 'var(--warning-color)'};">
+                            ${sale.status === 'paid' ? '✅ Pago' : '⏳ Pendente'}
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">
+                            ${new Date(sale.createdAt).toLocaleDateString('pt-BR')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Chart functions
+        function initializeCharts() {
+            const teamCtx = document.getElementById('teamChart').getContext('2d');
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+
+            teamChart = new Chart(teamCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Pagas',
+                        data: [],
+                        backgroundColor: 'rgba(22, 163, 74, 0.8)',
+                        borderColor: 'rgba(22, 163, 74, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: 'Pendentes',
+                        data: [],
+                        backgroundColor: 'rgba(217, 119, 6, 0.8)',
+                        borderColor: 'rgba(217, 119, 6, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pagas', 'Pendentes'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: [
+                            'rgba(22, 163, 74, 0.8)',
+                            'rgba(217, 119, 6, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(22, 163, 74, 1)',
+                            'rgba(217, 119, 6, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            updateCharts();
+        }
+
+        function updateCharts() {
+            if (!teamChart || !statusChart) return;
+
+            // Team chart data
+            const teamData = {};
+            sales.forEach(sale => {
+                if (!teamData[sale.team]) {
+                    teamData[sale.team] = { paid: 0, pending: 0 };
+                }
+                teamData[sale.team][sale.status]++;
+            });
+
+            const teams = Object.keys(teamData);
+            const paidData = teams.map(team => teamData[team].paid);
+            const pendingData = teams.map(team => teamData[team].pending);
+
+            teamChart.data.labels = teams;
+            teamChart.data.datasets[0].data = paidData;
+            teamChart.data.datasets[1].data = pendingData;
+            teamChart.update();
+
+            // Status chart data
+            const paidCount = sales.filter(s => s.status === 'paid').length;
+            const pendingCount = sales.filter(s => s.status === 'pending').length;
+
+            statusChart.data.datasets[0].data = [paidCount, pendingCount];
+            statusChart.update();
+        }
+
+        function updateAdvancedStats() {
+            const totalSales = sales.length;
+            const paidSales = sales.filter(s => s.status === 'paid').length;
+            const conversionRate = totalSales > 0 ? ((paidSales / totalSales) * 100).toFixed(1) : 0;
+
+            // Mock average ticket
+            const avgTicket = paidSales > 0 ? (Math.random() * 1000 + 500).toFixed(0) : 0;
+
+            // Top performer
+            const operatorStats = {};
+            sales.forEach(sale => {
+                if (!operatorStats[sale.operatorName]) {
+                    operatorStats[sale.operatorName] = 0;
+                }
+                if (sale.status === 'paid') {
+                    operatorStats[sale.operatorName]++;
+                }
+            });
+
+            const topPerformer = Object.keys(operatorStats).reduce((a, b) => 
+                operatorStats[a] > operatorStats[b] ? a : b, '-'
+            );
+
+            // Best team
+            const teamStats = {};
+            sales.forEach(sale => {
+                if (!teamStats[sale.team]) {
+                    teamStats[sale.team] = 0;
+                }
+                if (sale.status === 'paid') {
+                    teamStats[sale.team]++;
+                }
+            });
+
+            const bestTeam = Object.keys(teamStats).reduce((a, b) => 
+                teamStats[a] > teamStats[b] ? a : b, '-'
+            );
+
+            document.getElementById('conversionRate').textContent = conversionRate + '%';
+            document.getElementById('avgTicket').textContent = 'R$ ' + avgTicket;
+            document.getElementById('topPerformer').textContent = topPerformer;
+            document.getElementById('bestTeam').textContent = bestTeam;
+        }
+
+        // Export functions
+        function exportSalesData() {
+            if (sales.length === 0) {
+                showAlert('Nenhuma venda para exportar.', 'warning');
+                return;
+            }
+
+            const csvContent = [
+                ['ID', 'Nome do Aluno', 'Curso', 'Equipe', 'Operador', 'Status', 'ID CS', 'Data de Criação'].join(','),
+                ...sales.map(sale => [
+                    sale.id,
+                    `"${sale.studentName}"`,
+                    `"${sale.courseName}"`,
+                    `"${sale.team}"`,
+                    `"${sale.operatorName}"`,
+                    sale.status === 'paid' ? 'Pago' : 'Pendente',
+                    sale.csId,
+                    new Date(sale.createdAt).toLocaleDateString('pt-BR')
+                ].join(','))
+            ].join('\n');
+
+            downloadFile(csvContent, `vendas_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+            showAlert('Dados de vendas exportados com sucesso!', 'success');
+        }
+
+        function exportUsersData() {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem exportar dados de usuários.', 'error');
+                return;
+            }
+
+            if (users.length === 0) {
+                showAlert('Nenhum usuário para exportar.', 'warning');
+                return;
+            }
+
+            const csvContent = [
+                ['ID', 'Nome', 'Email', 'Função', 'Equipe', 'Data de Criação'].join(','),
+                ...users.map(user => [
+                    user.id,
+                    `"${user.name}"`,
+                    user.email,
+                    user.role === 'admin' ? 'Administrador' : 'Operador',
+                    `"${user.team}"`,
+                    new Date(user.createdAt).toLocaleDateString('pt-BR')
+                ].join(','))
+            ].join('\n');
+
+            downloadFile(csvContent, `usuarios_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+            showAlert('Dados de usuários exportados com sucesso!', 'success');
+        }
+
+        function backupSystemData() {
+            const backup = {
+                sales,
+                users,
+                exportedAt: new Date().toISOString(),
+                version: '2.0.0',
+                exportedBy: currentUser.name
+            };
+
+            const jsonContent = JSON.stringify(backup, null, 2);
+            downloadFile(jsonContent, `backup_sistema_vendas_${new Date().toISOString().split('T')[0]}.json`, 'application/json');
+            showAlert('Backup completo criado com sucesso!', 'success');
+        }
+
+        function generateReport() {
+            const totalSales = sales.length;
+            const paidSales = sales.filter(s => s.status === 'paid').length;
+            const pendingSales = sales.filter(s => s.status === 'pending').length;
+
+            const report = `
+RELATÓRIO DE VENDAS - CULTURA INGLESA
+=====================================
+
+Data do Relatório: ${new Date().toLocaleDateString('pt-BR')}
+Gerado por: ${currentUser.name}
+
+RESUMO GERAL:
+- Total de Vendas: ${totalSales}
+- Vendas Pagas: ${paidSales}
+- Vendas Pendentes: ${pendingSales}
+- Taxa de Conversão: ${totalSales > 0 ? ((paidSales / totalSales) * 100).toFixed(1) : 0}%
+
+VENDAS POR EQUIPE:
+${Object.entries(sales.reduce((acc, sale) => {
+    if (!acc[sale.team]) acc[sale.team] = { total: 0, paid: 0 };
+    acc[sale.team].total++;
+    if (sale.status === 'paid') acc[sale.team].paid++;
+    return acc;
+}, {})).map(([team, stats]) => 
+    `- ${team}: ${stats.total} vendas (${stats.paid} pagas)`
+).join('\n')}
+
+OPERADORES MAIS PRODUTIVOS:
+${Object.entries(sales.reduce((acc, sale) => {
+    if (!acc[sale.operatorName]) acc[sale.operatorName] = 0;
+    if (sale.status === 'paid') acc[sale.operatorName]++;
+    return acc;
+}, {})).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([name, count]) => 
+    `- ${name}: ${count} vendas pagas`
+).join('\n')}
+
+VENDAS RECENTES:
+${sales.slice(0, 10).map(sale => 
+    `- ${sale.studentName} | ${sale.team} | ${sale.status === 'paid' ? 'PAGO' : 'PENDENTE'} | ${new Date(sale.createdAt).toLocaleDateString('pt-BR')}`
+).join('\n')}
+            `;
+
+            downloadFile(report, `relatorio_vendas_${new Date().toISOString().split('T')[0]}.txt`, 'text/plain');
+            showAlert('Relatório detalhado gerado com sucesso!', 'success');
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Settings functions
+        function saveSettings() {
+            const settings = {
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                autoBackup: document.getElementById('autoBackup').checked,
+                reportFrequency: document.getElementById('reportFrequency').value,
+                theme: document.getElementById('theme').value
+            };
+
+            localStorage.setItem('systemSettings', JSON.stringify(settings));
+            showAlert('Configurações salvas com sucesso!', 'success');
+        }
+
+        function clearOldData() {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem limpar dados.', 'error');
+                return;
+            }
+
+            if (confirm('Deseja limpar vendas com mais de 6 meses?')) {
+                const sixMonthsAgo = new Date();
+                sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                
+                const oldCount = sales.length;
+                sales = sales.filter(sale => new Date(sale.createdAt) > sixMonthsAgo);
+                localStorage.setItem('sales', JSON.stringify(sales));
+                
+                const removedCount = oldCount - sales.length;
+                showAlert(`${removedCount} vendas antigas foram removidas.`, 'success');
+                updateDashboard();
+                renderSales();
+                updateCharts();
+            }
+        }
+
+        function resetSystem() {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem resetar o sistema.', 'error');
+                return;
+            }
+
+            if (confirm('ATENÇÃO: Esta ação irá excluir TODOS os dados do sistema. Esta ação não pode ser desfeita. Digite "RESET" para confirmar:')) {
+                const confirmation = prompt('Digite "RESET" para confirmar:');
+                if (confirmation === 'RESET') {
+                    localStorage.removeItem('sales');
+                    localStorage.removeItem('users');
+                    localStorage.removeItem('systemSettings');
+                    
+                    sales = [];
+                    users = [];
+                    
+                    showAlert('Sistema resetado com sucesso!', 'success');
+                    updateDashboard();
+                    renderSales();
+                    renderUsers();
+                    updateCharts();
+                    updateSystemInfo();
+                }
+            }
+        }
+
+        function updateSystemInfo() {
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('pt-BR');
+            document.getElementById('totalRecords').textContent = sales.length + users.length;
+            
+            // Calculate storage usage
+            const storageSize = JSON.stringify(sales).length + JSON.stringify(users).length;
+            const sizeInKB = (storageSize / 1024).toFixed(2);
+            document.getElementById('storageUsed').textContent = sizeInKB + ' KB';
+        }
+
+        // Utility functions
+        function showAlert(message, type) {
+            // Create alert element
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'error'}`;
+            alert.textContent = message;
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '9999';
+            alert.style.minWidth = '300px';
+            alert.style.maxWidth = '500px';
+            alert.style.animation = 'slideInRight 0.3s ease-out';
+
+            document.body.appendChild(alert);
+
+            // Remove after 4 seconds
+            setTimeout(() => {
+                alert.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    if (document.body.contains(alert)) {
+                        document.body.removeChild(alert);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('userModal');
+            if (event.target === modal) {
+                closeUserModal();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case 's':
+                        event.preventDefault();
+                        if (document.getElementById('settings').classList.contains('active')) {
+                            saveSettings();
+                        }
+                        break;
+                    case 'e':
+                        event.preventDefault();
+                        if (document.getElementById('sales').classList.contains('active')) {
+                            exportSalesData();
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOutRight {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
