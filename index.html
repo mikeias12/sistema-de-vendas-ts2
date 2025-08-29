@@ -1,0 +1,4226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Vendas e Conversão - Cultura Inglesa</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #dc2626;
+            --primary-hover: #b91c1c;
+            --primary-light: rgba(220, 38, 38, 0.1);
+            --secondary-color: #f1f5f9;
+            --background: #f8fafc;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #16a34a;
+            --success-light: rgba(22, 163, 74, 0.1);
+            --warning-color: #d97706;
+            --warning-light: rgba(217, 119, 6, 0.1);
+            --danger-color: #dc2626;
+            --info-color: #0891b2;
+            --info-light: rgba(8, 145, 178, 0.1);
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #ef4444;
+            --primary-hover: #dc2626;
+            --primary-light: rgba(239, 68, 68, 0.2);
+            --secondary-color: #374151;
+            --background: #111827;
+            --card-background: #1f2937;
+            --text-color: #f9fafb;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --success-color: #22c55e;
+            --success-light: rgba(34, 197, 94, 0.2);
+            --warning-color: #f59e0b;
+            --warning-light: rgba(245, 158, 11, 0.2);
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --info-light: rgba(6, 182, 212, 0.2);
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-color);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.2rem;
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-color);
+        }
+
+        /* Login Form */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            padding: 1rem;
+        }
+
+        .login-form {
+            background: var(--card-background);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px -10px rgba(220, 38, 38, 0.3);
+            width: 100%;
+            max-width: 420px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 16px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 28px;
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--secondary-color);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .nav-tab:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .nav-tab.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-background);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--secondary-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-background);
+            padding: 2rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-color);
+        }
+
+        .stat-card.primary::before { background: var(--primary-color); }
+        .stat-card.success::before { background: var(--success-color); }
+        .stat-card.warning::before { background: var(--warning-color); }
+        .stat-card.info::before { background: var(--info-color); }
+        .stat-card.secondary::before { background: var(--text-muted); }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--card-background);
+            color: var(--text-color);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            background: var(--secondary-color);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+            transform: scale(1.02);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .expected-columns {
+            background: var(--info-light);
+            border: 1px solid var(--info-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .column-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-family: monospace;
+        }
+
+        .column-item {
+            background: var(--card-background);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        .btn-warning:hover {
+            background: #b45309;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-info {
+            background: var(--info-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
+        }
+
+        .btn-info:hover {
+            background: #0e7490;
+            transform: translateY(-1px);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Role badges */
+        .role-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-admin {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .role-supervisor {
+            background: var(--warning-light);
+            color: var(--warning-color);
+        }
+
+        .role-operator {
+            background: var(--info-light);
+            color: var(--info-color);
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: var(--success-light);
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background: var(--warning-light);
+            color: var(--warning-color);
+        }
+
+        .badge-primary {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .badge-info {
+            background: var(--info-light);
+            color: var(--info-color);
+        }
+
+        /* Sales List */
+        .sales-item,
+        .user-item,
+        .ticket-item {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: var(--card-background);
+            transition: var(--transition);
+        }
+
+        .sales-item:hover,
+        .user-item:hover,
+        .ticket-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
+        }
+
+        .sales-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .sales-info {
+            flex: 1;
+        }
+
+        .sales-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .sales-details {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--card-background);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        /* Hidden content */
+        .tab-content {
+            display: none;
+            animation: fadeInContent 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Charts */
+        .chart-container {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 1rem;
+            height: 400px;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            background: var(--secondary-color);
+            height: 300px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filters > * {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border-left-color: #dc2626;
+        }
+
+        .alert-success {
+            background: var(--success-light);
+            color: var(--success-color);
+            border-left-color: var(--success-color);
+        }
+
+        .alert-warning {
+            background: var(--warning-light);
+            color: var(--warning-color);
+            border-left-color: var(--warning-color);
+        }
+
+        .alert-info {
+            background: var(--info-light);
+            color: var(--info-color);
+            border-left-color: var(--info-color);
+        }
+
+        /* Export section */
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .export-card {
+            background: var(--card-background);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .export-card:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .export-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        /* Settings sections */
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+
+        .danger-zone {
+            background: rgba(239, 68, 68, 0.05);
+            border: 2px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .danger-zone h3 {
+            color: var(--danger-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Tabulation Configuration */
+        .tabulation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: var(--card-background);
+        }
+
+        .tabulation-good {
+            border-left: 4px solid var(--success-color);
+            background: var(--success-light);
+        }
+
+        .tabulation-bad {
+            border-left: 4px solid var(--danger-color);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        /* Progress bars */
+        .progress-bar {
+            background: var(--secondary-color);
+            border-radius: 8px;
+            overflow: hidden;
+            height: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), #22c55e);
+            border-radius: 8px;
+            transition: width 0.6s ease-out;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Permission indicators */
+        .permission-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .permission-full {
+            background: var(--success-light);
+            color: var(--success-color);
+        }
+
+        .permission-limited {
+            background: var(--warning-light);
+            color: var(--warning-color);
+        }
+
+        .permission-view {
+            background: var(--info-light);
+            color: var(--info-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+
+            .sales-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .export-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .filters > * {
+                min-width: unset;
+            }
+
+            .column-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Additional styles for new features */
+        .conversion-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .metric-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .tabulation-config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .tabulation-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        /* Supervisor specific styles */
+        .supervisor-section {
+            border: 2px solid var(--warning-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: var(--warning-light);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <form class="login-form" onsubmit="handleLogin(event)">
+            <div class="login-header">
+                <div class="login-logo">CI</div>
+                <h1>Sistema de Vendas e Conversão</h1>
+                <p style="color: var(--text-muted);">Cultura Inglesa - Gestão de Tickets Blip</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" id="email" class="form-input" placeholder="exemplo@culturainglesa.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Senha</label>
+                <input type="password" id="password" class="form-input" placeholder="exemplo123" required>
+            </div>
+
+            <div id="loginError" class="alert alert-error" style="display: none;"></div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span id="loginSpinner" class="spinner" style="display: none;"></span>
+                <span id="loginText">Entrar</span>
+            </button>
+
+            <div style="background: var(--secondary-color); padding: 1rem; border-radius: 8px; margin-top: 1.5rem; font-size: 0.875rem;">
+                <p><strong>Credenciais de Teste:</strong></p>
+                <p>👑 Admin: admin@culturainglesa.com / admin123</p>
+                <p>👮 Supervisor: supervisor@culturainglesa.com / super123</p>
+                <p>👤 Operador: operador@culturainglesa.com / oper123</p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" style="display: none;">
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <div class="logo">CI</div>
+                        <div>
+                            <h1>Sistema de Vendas e Conversão</h1>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Cultura Inglesa - Gestão Blip</p>
+                        </div>
+                    </div>
+                    <div class="user-info">
+                        <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema">
+                            <span id="themeIcon">🌙</span>
+                        </button>
+                        <span id="currentUser"></span>
+                        <button class="btn btn-secondary btn-sm" onclick="logout()">
+                            🚪 Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+                    <button class="nav-tab" onclick="showTab('sales')">💰 Vendas</button>
+                    <button class="nav-tab" onclick="showTab('tickets')">🎫 Tickets</button>
+                    <button class="nav-tab" onclick="showTab('conversion')">📈 Conversão</button>
+                    <button id="usersTab" class="nav-tab" onclick="showTab('users')" style="display: none;">👥 Usuários</button>
+                    <button id="settingsTab" class="nav-tab" onclick="showTab('settings')" style="display: none;">⚙️ Configurações</button>
+                </div>
+            </nav>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-value" id="totalSales">0</div>
+                        <div class="stat-label">Total de Vendas</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-value" id="paidSales">0</div>
+                        <div class="stat-label">Vendas Pagas</div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-value" id="totalTickets">0</div>
+                        <div class="stat-label">Total de Tickets</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-value" id="conversionRateDisplay">0%</div>
+                        <div class="stat-label">Taxa de Conversão</div>
+                    </div>
+                    <div class="stat-card secondary">
+                        <div class="stat-value" id="totalOperators">0</div>
+                        <div class="stat-label">Operadores Ativos</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">📈 Vendas por Equipe</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="teamChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">🎯 Status dos Tickets</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">📊 Performance Mensal</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="monthlyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">🏆 Top Performers</h2>
+                        </div>
+                        <div class="card-content">
+                            <div id="topPerformers"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🕒 Atividade Recente</h2>
+                    </div>
+                    <div class="card-content">
+                        <div id="recentActivity"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Tab -->
+            <div id="sales" class="tab-content">
+                <!-- Sales Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">➕ Registrar Nova Venda</h2>
+                    </div>
+                    <div class="card-content">
+                        <form onsubmit="addSale(event)">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">🔗 Link do HubSpot *</label>
+                                    <input type="url" id="hubspotLink" class="form-input" placeholder="https://hubspot.com/..." required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">🎫 ID do Ticket *</label>
+                                    <input type="text" id="ticketId" class="form-input" placeholder="TICK_001" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">👤 Nome do Aluno *</label>
+                                    <input type="text" id="studentName" class="form-input" placeholder="Nome completo do aluno" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">📅 Data de Nascimento *</label>
+                                    <input type="date" id="birthDate" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">👨‍👩‍👧 Nome do Responsável</label>
+                                    <input type="text" id="responsibleName" class="form-input" placeholder="Se o aluno for menor de idade">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">📚 Nome do Curso *</label>
+                                    <input type="text" id="courseName" class="form-input" placeholder="Digite o nome do curso" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">👥 Equipe *</label>
+                                <select id="team" class="form-select" required>
+                                    <option value="">Selecione uma equipe</option>
+                                    <option value="Equipe Kaique">Equipe Kaique</option>
+                                    <option value="Equipe Ivan">Equipe Ivan</option>
+                                    <option value="Equipe Ana Paula">Equipe Ana Paula</option>
+                                    <option value="Equipe Ana (M)">Equipe Ana (M)</option>
+                                    <option value="Equipe Admin">Equipe Admin</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                ✅ Registrar Venda
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Sales Filters -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🔍 Filtros</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="filters">
+                            <input type="text" id="searchSales" class="form-input" placeholder="🔎 Buscar por nome..." onkeyup="filterSales()">
+                            <select id="statusFilter" class="form-select" onchange="filterSales()">
+                                <option value="all">Todos os Status</option>
+                                <option value="paid">✅ Pagas</option>
+                                <option value="pending">⏳ Pendentes</option>
+                            </select>
+                            <select id="teamFilter" class="form-select" onchange="filterSales()">
+                                <option value="all">Todas as Equipes</option>
+                                <option value="Equipe Kaique">Equipe Kaique</option>
+                                <option value="Equipe Ivan">Equipe Ivan</option>
+                                <option value="Equipe Ana Paula">Equipe Ana Paula</option>
+                                <option value="Equipe Ana (M)">Equipe Ana (M)</option>
+                                <option value="Equipe Admin">Equipe Admin</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="exportSalesData()">
+                                📄 Exportar Lista
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales List -->
+                <div id="salesList"></div>
+            </div>
+
+            <!-- Tickets Tab -->
+            <div id="tickets" class="tab-content">
+                <!-- Import Tickets -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📂 Importar Tickets do Excel/CSV</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="file-upload-area" onclick="document.getElementById('excelFile').click()" ondrop="handleFileDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                            <input type="file" id="excelFile" class="file-input" accept=".xlsx,.xls,.csv" onchange="handleFileUpload(event)">
+                            <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color);">📋</div>
+                            <h3>Arraste o arquivo Excel/CSV aqui ou clique para selecionar</h3>
+                            <p style="color: var(--text-muted); margin-top: 0.5rem;">
+                                Formatos aceitos: .xlsx, .xls, .csv<br>
+                                O sistema detecta automaticamente as colunas necessárias
+                            </p>
+                        </div>
+                        
+                        <div class="expected-columns">
+                            <h4 style="color: var(--info-color); margin-bottom: 0.5rem;">📋 Colunas Esperadas no Arquivo:</h4>
+                            <div class="column-list">
+                                <div class="column-item">SequentialId</div>
+                                <div class="column-item">CustomerIdentity</div>
+                                <div class="column-item">AgentIdentity</div>
+                                <div class="column-item">Status</div>
+                                <div class="column-item">StorageDate</div>
+                                <div class="column-item">ExpirationDate</div>
+                                <div class="column-item">CloseDate</div>
+                                <div class="column-item">Team</div>
+                                <div class="column-item">Closed</div>
+                                <div class="column-item">Tags</div>
+                                <div class="column-item">QueueTime</div>
+                                <div class="column-item">FirstResponseTime</div>
+                                <div class="column-item">AverageResponseTime</div>
+                                <div class="column-item">CustomerName</div>
+                                <div class="column-item">CustomerEmail</div>
+                                <div class="column-item">CustomerGender</div>
+                                <div class="column-item">CustomerCity</div>
+                                <div class="column-item">CustomerPhoneNumber</div>
+                                <div class="column-item">AgentName</div>
+                                <div class="column-item">AgentEmail</div>
+                                <div class="column-item">tunnel.owner</div>
+                                <div class="column-item">tunnel.originator</div>
+                                <div class="column-item">isRio</div>
+                                <div class="column-item">unidadeMatricula</div>
+                                <div class="column-item">modalidade</div>
+                                <div class="column-item">ingles</div>
+                                <div class="column-item">levelRecommendation</div>
+                                <div class="column-item">queue</div>
+                                <div class="column-item">isBeginner</div>
+                                <div class="column-item">Unidade_Lead</div>
+                                <div class="column-item">deskTeam</div>
+                                <div class="column-item">BotName</div>
+                            </div>
+                            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+                                💡 O sistema é inteligente e detecta as colunas automaticamente, mesmo que estejam em ordem diferente ou com nomes ligeiramente diferentes.
+                            </p>
+                        </div>
+                        
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-info" onclick="downloadTemplate()">
+                                📥 Baixar Modelo Excel
+                            </button>
+                            <button class="btn btn-warning" onclick="showImportHelp()">
+                                ❓ Ajuda para Importação
+                            </button>
+                        </div>
+
+                        <div id="importProgress" style="display: none; margin-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Processando...</span>
+                                <span id="progressText">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                            </div>
+                            <div id="importDetails" style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-muted);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tickets Filters -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🔍 Filtros de Tickets</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="filters">
+                            <input type="text" id="searchTickets" class="form-input" placeholder="🔎 Buscar ticket..." onkeyup="filterTickets()">
+                            <select id="statusTicketFilter" class="form-select" onchange="filterTickets()">
+                                <option value="all">Todos os Status</option>
+                                <option value="Closed">✅ Fechados</option>
+                                <option value="Open">📂 Abertos</option>
+                                <option value="Pending">⏳ Pendentes</option>
+                            </select>
+                            <select id="ticketTeamFilter" class="form-select" onchange="filterTickets()">
+                                <option value="all">Todas as Equipes</option>
+                                <option value="Equipe Kaique">Equipe Kaique</option>
+                                <option value="Equipe Ivan">Equipe Ivan</option>
+                                <option value="Equipe Ana Paula">Equipe Ana Paula</option>
+                                <option value="Equipe Ana (M)">Equipe Ana (M)</option>
+                                <option value="Equipe Admin">Equipe Admin</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="exportTicketsData()">
+                                📄 Exportar Tickets
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tickets List -->
+                <div id="ticketsList"></div>
+            </div>
+
+            <!-- Conversion Tab -->
+            <div id="conversion" class="tab-content">
+                <!-- Conversion Metrics -->
+                <div class="conversion-metrics">
+                    <div class="metric-card">
+                        <div class="metric-value" style="color: var(--success-color);" id="conversionRate">0%</div>
+                        <div class="metric-label">Taxa de Conversão Geral</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" style="color: var(--info-color);" id="ticketsWithSales">0</div>
+                        <div class="metric-label">Tickets com Vendas</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" style="color: var(--warning-color);" id="avgResponseTime">0h</div>
+                        <div class="metric-label">Tempo Médio de Resposta</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" style="color: var(--primary-color);" id="bestConvertingTeam">-</div>
+                        <div class="metric-label">Melhor Equipe</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">🎯 Conversão por Equipe</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="conversionByTeamChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">📅 Evolução da Conversão</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="conversionTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🔄 Análise de Conversão por Agente</h2>
+                    </div>
+                    <div class="card-content">
+                        <div id="agentConversionAnalysis"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users" class="tab-content">
+                <div class="card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <h2 class="card-title">👥 Gerenciamento de Usuários</h2>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-primary" onclick="showAddUserModal()">
+                                ➕ Adicionar Usuário
+                            </button>
+                            <button class="btn btn-info" onclick="exportUsersData()">
+                                📄 Exportar Usuários
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div id="usersList"></div>
+                    </div>
+                </div>
+
+                <!-- Supervisor Section -->
+                <div id="supervisorSection" class="supervisor-section" style="display: none;">
+                    <h3 style="color: var(--warning-color); margin-bottom: 1rem;">👮‍♂️ Painel do Supervisor</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div class="metric-card">
+                            <div class="metric-value" style="color: var(--info-color);" id="teamMembers">0</div>
+                            <div class="metric-label">Membros da Equipe</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" style="color: var(--success-color);" id="teamConversion">0%</div>
+                            <div class="metric-label">Conversão da Equipe</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" style="color: var(--primary-color);" id="teamSales">0</div>
+                            <div class="metric-label">Vendas da Equipe</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <!-- Theme Settings -->
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">🎨 Configurações de Aparência</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="form-group">
+                                <label class="form-label">🌓 Tema da Interface</label>
+                                <select class="form-select" id="themeSelect" onchange="changeTheme(this.value)">
+                                    <option value="light">☀️ Claro</option>
+                                    <option value="dark">🌙 Escuro</option>
+                                    <option value="auto">🔄 Automático (Sistema)</option>
+                                </select>
+                                <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">
+                                    No modo automático, o tema seguirá as configurações do seu sistema operacional.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tag Configuration for Tickets -->
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">🏷️ Configuração de Tags de Conversão</h2>
+                        </div>
+                        <div class="card-content">
+                            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                                Configure quais tags são consideradas positivas para conversão de vendas.
+                            </p>
+                            
+                            <div class="tabulation-config-grid">
+                                <div>
+                                    <h4 style="margin-bottom: 1rem; color: var(--success-color);">✅ Tags de Conversão Positiva</h4>
+                                    <div class="form-group">
+                                        <input type="text" id="goodTagInput" class="form-input" placeholder="Digite a tag de conversão">
+                                        <button type="button" class="btn btn-success btn-sm" onclick="addConversionTag('good')" style="margin-top: 0.5rem; width: 100%;">
+                                            ➕ Adicionar Tag Positiva
+                                        </button>
+                                    </div>
+                                    <div class="tabulation-list" id="goodTags"></div>
+                                </div>
+
+                                <div>
+                                    <h4 style="margin-bottom: 1rem; color: var(--danger-color);">❌ Tags de Não Conversão</h4>
+                                    <div class="form-group">
+                                        <input type="text" id="badTagInput" class="form-input" placeholder="Digite a tag de não conversão">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="addConversionTag('bad')" style="margin-top: 0.5rem; width: 100%;">
+                                            ➕ Adicionar Tag Negativa
+                                        </button>
+                                    </div>
+                                    <div class="tabulation-list" id="badTags"></div>
+                                </div>
+                            </div>
+
+                            <div style="background: var(--info-light); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="color: var(--info-color); margin-bottom: 0.5rem;">💡 Exemplos de Tags:</h4>
+                                <ul style="color: var(--text-muted); font-size: 0.9rem; padding-left: 1.5rem;">
+                                    <li><strong>Positivas:</strong> "venda_realizada", "interesse_confirmado", "agendamento_feito", "lead_qualificado"</li>
+                                    <li><strong>Negativas:</strong> "nao_interessado", "sem_resposta", "fora_perfil", "numero_errado"</li>
+                                    <li>Use as tags exatamente como aparecem na coluna "Tags" dos seus dados</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">📊 Exportação de Dados</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="export-grid">
+                                <div class="export-card" onclick="exportSalesData()">
+                                    <div class="export-icon">💰</div>
+                                    <h3>Exportar Vendas</h3>
+                                    <p>Arquivo CSV com todas as vendas</p>
+                                </div>
+                                <div class="export-card" onclick="exportTicketsData()">
+                                    <div class="export-icon">🎫</div>
+                                    <h3>Exportar Tickets</h3>
+                                    <p>Arquivo CSV com todos os tickets</p>
+                                </div>
+                                <div class="export-card" onclick="exportConversionReport()">
+                                    <div class="export-icon">📈</div>
+                                    <h3>Relatório de Conversão</h3>
+                                    <p>Análise detalhada de performance</p>
+                                </div>
+                                <div class="export-card" onclick="backupSystemData()">
+                                    <div class="export-icon">💾</div>
+                                    <h3>Backup Completo</h3>
+                                    <p>Arquivo JSON com todos os dados</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">🔧 Configurações do Sistema</h2>
+                        </div>
+                        <div class="card-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                                <div>
+                                    <h4>📧 Notificações por Email</h4>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0;">
+                                        <input type="checkbox" id="emailNotifications" checked>
+                                        Ativar notificações
+                                    </label>
+                                </div>
+                                <div>
+                                    <h4>🔄 Backup Automático</h4>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0;">
+                                        <input type="checkbox" id="autoBackup" checked>
+                                        Backup diário
+                                    </label>
+                                </div>
+                                <div>
+                                    <h4>📊 Relatórios</h4>
+                                    <select class="form-select" id="reportFrequency">
+                                        <option>Diário</option>
+                                        <option selected>Semanal</option>
+                                        <option>Mensal</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <h4>⏱️ Atualização Automática</h4>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0;">
+                                        <input type="checkbox" id="autoRefresh" checked>
+                                        Atualizar dados a cada 5min
+                                    </label>
+                                </div>
+                                <div>
+                                    <h4>🔔 Alertas de Performance</h4>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0;">
+                                        <input type="checkbox" id="performanceAlerts" checked>
+                                        Notificar baixa conversão
+                                    </label>
+                                </div>
+                                <div>
+                                    <h4>📱 Interface Responsiva</h4>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0;">
+                                        <input type="checkbox" id="responsiveMode" checked>
+                                        Modo responsivo ativo
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 1rem;">
+                                💾 Salvar Configurações
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">📈 Estatísticas Avançadas</h2>
+                        </div>
+                        <div class="card-content">
+                            <div id="advancedStats">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                    <div style="text-align: center; padding: 1rem; background: var(--success-light); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success-color);" id="overallConversionRate">0%</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">Taxa de Conversão</div>
+                                    </div>
+                                    <div style="text-align: center; padding: 1rem; background: var(--primary-light); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);" id="avgTicket">R$ 0</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">Ticket Médio</div>
+                                    </div>
+                                    <div style="text-align: center; padding: 1rem; background: var(--warning-light); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--warning-color);" id="topPerformer">-</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">Top Vendedor</div>
+                                    </div>
+                                    <div style="text-align: center; padding: 1rem; background: var(--info-light); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--info-color);" id="bestConvertingTeamStat">-</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">Equipe com Melhor Conversão</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="danger-zone">
+                        <h3>⚠️ Área de Risco</h3>
+                        <p style="margin-bottom: 1rem; color: var(--text-muted);">
+                            Estas ações são irreversíveis. Use com cuidado.
+                        </p>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <button class="btn btn-warning" onclick="clearOldData()">
+                                🗑️ Limpar Dados Antigos
+                            </button>
+                            <button class="btn btn-danger" onclick="resetSystem()">
+                                🔄 Resetar Sistema
+                            </button>
+                            <button class="btn btn-info" onclick="clearTicketsData()">
+                                🎫 Limpar Tickets
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">ℹ️ Informações do Sistema</h2>
+                        </div>
+                        <div class="card-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.9rem;">
+                                <div>
+                                    <strong>Versão:</strong> 4.0.0 Pro
+                                </div>
+                                <div>
+                                    <strong>Última atualização:</strong> <span id="lastUpdate"></span>
+                                </div>
+                                <div>
+                                    <strong>Total de registros:</strong> <span id="totalRecords">0</span>
+                                </div>
+                                <div>
+                                    <strong>Tickets importados:</strong> <span id="ticketsImported">0</span>
+                                </div>
+                                <div>
+                                    <strong>Espaço usado:</strong> <span id="storageUsed">0 KB</span>
+                                </div>
+                                <div>
+                                    <strong>Última importação:</strong> <span id="lastImport">Nunca</span>
+                                </div>
+                                <div>
+                                    <strong>Tema atual:</strong> <span id="currentTheme">Claro</span>
+                                </div>
+                                <div>
+                                    <strong>Desenvolvido para:</strong> Tree Smart-CNC
+                                </div>
+                                <div>
+                                    <strong>Suporte:</strong> mikeiascontanova@gmail.com
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="userModalTitle">➕ Adicionar Usuário</h3>
+                <button class="modal-close" onclick="closeUserModal()">&times;</button>
+            </div>
+            <form onsubmit="saveUser(event)">
+                <div class="form-group">
+                    <label class="form-label">👤 Nome do Usuário</label>
+                    <input type="text" id="userName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📧 Email</label>
+                    <input type="email" id="userEmail" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">🎭 Função</label>
+                    <select id="userRole" class="form-select" onchange="toggleTeamField()" required>
+                        <option value="operator">👤 Operador</option>
+                        <option value="supervisor">👮‍♂️ Supervisor</option>
+                        <option value="admin">👑 Administrador</option>
+                    </select>
+                    <div style="background: var(--info-light); padding: 0.75rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.8rem;">
+                        <div><strong>👤 Operador:</strong> Pode registrar vendas e visualizar dados da sua equipe</div>
+                        <div><strong>👮‍♂️ Supervisor:</strong> Pode gerenciar sua equipe e editar vendas pendentes</div>
+                        <div><strong>👑 Admin:</strong> Acesso total, pode editar todas as vendas e gerenciar usuários</div>
+                    </div>
+                </div>
+                <div class="form-group" id="teamField">
+                    <label class="form-label">👥 Equipe</label>
+                    <select id="userTeam" class="form-select">
+                        <option value="">Selecione uma equipe</option>
+                        <option value="Equipe Kaique">Equipe Kaique</option>
+                        <option value="Equipe Ivan">Equipe Ivan</option>
+                        <option value="Equipe Ana Paula">Equipe Ana Paula</option>
+                        <option value="Equipe Ana (M)">Equipe Ana (M)</option>
+                        <option value="Equipe Admin">Equipe Admin</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        💾 Salvar
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeUserModal()" style="flex: 1;">
+                        ❌ Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Import Help Modal -->
+    <div id="importHelpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>❓ Ajuda para Importação de Tickets</h3>
+                <button class="modal-close" onclick="closeImportHelp()">&times;</button>
+            </div>
+            <div>
+                <h4>📋 Formato do Arquivo Excel/CSV:</h4>
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">O arquivo deve conter as colunas específicas do sistema Blip. O sistema detecta automaticamente as colunas necessárias:</p>
+                
+                <div style="background: var(--secondary-color); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-family: monospace; max-height: 300px; overflow-y: auto;">
+                    <strong>Colunas principais detectadas automaticamente:</strong><br>
+                    • <strong>SequentialId:</strong> ID sequencial do ticket<br>
+                    • <strong>CustomerIdentity:</strong> Identificação do cliente<br>
+                    • <strong>AgentIdentity:</strong> Identificação do agente<br>
+                    • <strong>Status:</strong> Status do ticket<br>
+                    • <strong>StorageDate:</strong> Data de armazenamento<br>
+                    • <strong>ExpirationDate:</strong> Data de expiração<br>
+                    • <strong>CloseDate:</strong> Data de fechamento<br>
+                    • <strong>Team:</strong> Equipe responsável<br>
+                    • <strong>Closed:</strong> Indicador se está fechado<br>
+                    • <strong>Tags:</strong> Tags de conversão<br>
+                    • <strong>QueueTime:</strong> Tempo na fila<br>
+                    • <strong>FirstResponseTime:</strong> Tempo primeira resposta<br>
+                    • <strong>AverageResponseTime:</strong> Tempo médio de resposta<br>
+                    • <strong>CustomerName:</strong> Nome do cliente<br>
+                    • <strong>CustomerEmail:</strong> Email do cliente<br>
+                    • <strong>CustomerGender:</strong> Gênero do cliente<br>
+                    • <strong>CustomerCity:</strong> Cidade do cliente<br>
+                    • <strong>CustomerPhoneNumber:</strong> Telefone do cliente<br>
+                    • <strong>AgentName:</strong> Nome do agente<br>
+                    • <strong>AgentEmail:</strong> Email do agente<br>
+                    • <strong>tunnel.owner:</strong> Proprietário do túnel<br>
+                    • <strong>tunnel.originator:</strong> Originador do túnel<br>
+                    • <strong>isRio:</strong> Indica se é do Rio<br>
+                    • <strong>unidadeMatricula:</strong> Unidade de matrícula<br>
+                    • <strong>modalidade:</strong> Modalidade do curso<br>
+                    • <strong>ingles:</strong> Nível de inglês<br>
+                    • <strong>levelRecommendation:</strong> Recomendação de nível<br>
+                    • <strong>queue:</strong> Fila de atendimento<br>
+                    • <strong>isBeginner:</strong> Indica se é iniciante<br>
+                    • <strong>Unidade_Lead:</strong> Unidade do lead<br>
+                    • <strong>deskTeam:</strong> Equipe do desk<br>
+                    • <strong>BotName:</strong> Nome do bot
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>💡 Dicas importantes:</strong><br>
+                    • O sistema é inteligente e detecta as colunas automaticamente<br>
+                    • Nem todas as colunas são obrigatórias, mas quanto mais dados, melhor a análise<br>
+                    • Configure as tags de conversão na seção de configurações<br>
+                    • Os dados são processados e analisados automaticamente
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let sales = JSON.parse(localStorage.getItem('sales') || '[]');
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
+        let tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+        let conversionConfig = JSON.parse(localStorage.getItem('conversionConfig') || '{"good": ["venda_realizada", "interesse_confirmado", "agendamento_feito"], "bad": ["nao_interessado", "sem_resposta", "fora_perfil"]}');
+        let editingUserId = null;
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        
+        // Charts
+        let teamChart = null;
+        let statusChart = null;
+        let conversionByTeamChart = null;
+        let conversionTrendChart = null;
+        let monthlyChart = null;
+
+        // Default credentials
+        const DEFAULT_CREDENTIALS = {
+            admin: { email: 'admin@culturainglesa.com', password: 'admin123' },
+            supervisor: { email: 'supervisor@culturainglesa.com', password: 'super123' },
+            operator: { email: 'operador@culturainglesa.com', password: 'oper123' }
+        };
+
+        // Default users
+        const DEFAULT_USERS = {
+            admin: {
+                id: 'admin-001',
+                name: 'Administrador',
+                email: 'admin@culturainglesa.com',
+                role: 'admin',
+                team: 'Administração',
+                createdAt: new Date().toISOString()
+            },
+            supervisor: {
+                id: 'super-001',
+                name: 'Supervisor',
+                email: 'supervisor@culturainglesa.com',
+                role: 'supervisor',
+                team: 'Equipe Kaique',
+                createdAt: new Date().toISOString()
+            },
+            operator: {
+                id: 'oper-001',
+                name: 'Operador',
+                email: 'operador@culturainglesa.com',
+                role: 'operator',
+                team: 'Equipe Kaique',
+                createdAt: new Date().toISOString()
+            }
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply saved theme
+            applyTheme(currentTheme);
+            
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                showMainApp();
+            }
+            
+            // Initialize system info
+            updateSystemInfo();
+            loadConversionConfig();
+            loadSettings();
+        });
+
+        // Theme functions
+        function toggleTheme() {
+            const themes = ['light', 'dark'];
+            const currentIndex = themes.indexOf(currentTheme);
+            const nextTheme = themes[(currentIndex + 1) % themes.length];
+            changeTheme(nextTheme);
+        }
+
+        function changeTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('theme', theme);
+            applyTheme(theme);
+            updateThemeSelect();
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'auto') {
+                // Use system preference
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                theme = prefersDark ? 'dark' : 'light';
+            }
+            
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            // Update theme icon
+            const themeIcon = document.getElementById('themeIcon');
+            if (themeIcon) {
+                themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+            }
+            
+            // Update current theme display
+            const currentThemeDisplay = document.getElementById('currentTheme');
+            if (currentThemeDisplay) {
+                const themeNames = { light: 'Claro', dark: 'Escuro', auto: 'Automático' };
+                currentThemeDisplay.textContent = themeNames[currentTheme] || 'Claro';
+            }
+        }
+
+        function updateThemeSelect() {
+            const themeSelect = document.getElementById('themeSelect');
+            if (themeSelect) {
+                themeSelect.value = currentTheme;
+            }
+        }
+
+        // Login function
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            const spinner = document.getElementById('loginSpinner');
+            const text = document.getElementById('loginText');
+
+            // Show loading state
+            spinner.style.display = 'inline-block';
+            text.textContent = 'Entrando...';
+
+            setTimeout(() => {
+                // Check default credentials
+                for (let [role, creds] of Object.entries(DEFAULT_CREDENTIALS)) {
+                    if (email === creds.email && password === creds.password) {
+                        currentUser = DEFAULT_USERS[role];
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        showMainApp();
+                        return;
+                    }
+                }
+
+                // Check other users
+                const foundUser = users.find(u => u.email === email);
+                if (foundUser) {
+                    currentUser = foundUser;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    showMainApp();
+                    return;
+                }
+
+                // Show error
+                errorDiv.textContent = 'Email ou senha incorretos';
+                errorDiv.style.display = 'block';
+                spinner.style.display = 'none';
+                text.textContent = 'Entrar';
+            }, 1000);
+        }
+
+        // Show main app
+        function showMainApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            const roleNames = {
+                'admin': 'Administrador',
+                'supervisor': 'Supervisor',
+                'operator': 'Operador'
+            };
+            
+            document.getElementById('currentUser').innerHTML = `
+                ${currentUser.name} 
+                <span class="role-badge role-${currentUser.role}">
+                    ${currentUser.role === 'admin' ? '👑' : currentUser.role === 'supervisor' ? '👮‍♂️' : '👤'} 
+                    ${roleNames[currentUser.role]}
+                </span>
+            `;
+            
+            // Show tabs based on role
+            if (currentUser.role === 'admin') {
+                document.getElementById('usersTab').style.display = 'block';
+                document.getElementById('settingsTab').style.display = 'block';
+            } else if (currentUser.role === 'supervisor') {
+                document.getElementById('settingsTab').style.display = 'block';
+                document.getElementById('supervisorSection').style.display = 'block';
+            }
+
+            updateDashboard();
+            renderSales();
+            renderUsers();
+            renderTickets();
+            initializeCharts();
+            updateAdvancedStats();
+            updateConversionMetrics();
+            updateSupervisorStats();
+        }
+
+        // Permission checking functions
+        function canEditSale(sale) {
+            if (currentUser.role === 'admin') return true;
+            if (currentUser.role === 'supervisor' && sale.status === 'pending') return true;
+            return false;
+        }
+
+        function canDeleteSale(sale) {
+            return currentUser.role === 'admin';
+        }
+
+        function canManageUsers() {
+            return currentUser.role === 'admin' || currentUser.role === 'supervisor';
+        }
+
+        function canAccessSettings() {
+            return currentUser.role === 'admin' || currentUser.role === 'supervisor';
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+                
+                // Reset form
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('loginError').style.display = 'none';
+                document.getElementById('loginSpinner').style.display = 'none';
+                document.getElementById('loginText').textContent = 'Entrar';
+            }
+        }
+
+        // Tab navigation
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Update nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update charts when relevant tabs are shown
+            if (tabName === 'dashboard') {
+                setTimeout(() => {
+                    updateCharts();
+                    updateAdvancedStats();
+                    updateConversionMetrics();
+                    updateSupervisorStats();
+                }, 100);
+            } else if (tabName === 'conversion') {
+                setTimeout(() => {
+                    updateConversionCharts();
+                    updateAgentConversionAnalysis();
+                }, 100);
+            }
+        }
+
+        // Sales functions
+        function addSale(event) {
+            event.preventDefault();
+            
+            const newSale = {
+                id: Date.now().toString(),
+                hubspotLink: document.getElementById('hubspotLink').value,
+                ticketId: document.getElementById('ticketId').value,
+                studentName: document.getElementById('studentName').value,
+                birthDate: document.getElementById('birthDate').value,
+                responsibleName: document.getElementById('responsibleName').value,
+                courseName: document.getElementById('courseName').value,
+                team: document.getElementById('team').value,
+                operatorId: currentUser.id,
+                operatorName: currentUser.name,
+                status: 'pending',
+                createdAt: new Date().toISOString(),
+                createdBy: currentUser.role
+            };
+
+            sales.unshift(newSale);
+            localStorage.setItem('sales', JSON.stringify(sales));
+
+            // Reset form
+            event.target.reset();
+
+            showAlert('Venda registrada com sucesso!', 'success');
+            updateDashboard();
+            renderSales();
+            updateCharts();
+            updateAdvancedStats();
+            updateConversionMetrics();
+            updateSupervisorStats();
+        }
+
+        function toggleSaleStatus(saleId) {
+            const sale = sales.find(s => s.id === saleId);
+            if (!sale) return;
+
+            if (!canEditSale(sale)) {
+                const permission = currentUser.role === 'supervisor' ? 
+                    'Supervisores só podem editar vendas pendentes' : 
+                    'Apenas administradores e supervisores podem alterar vendas';
+                showAlert(permission, 'error');
+                return;
+            }
+
+            sale.status = sale.status === 'paid' ? 'pending' : 'paid';
+            sale.lastModifiedBy = currentUser.name;
+            sale.lastModifiedAt = new Date().toISOString();
+            localStorage.setItem('sales', JSON.stringify(sales));
+            
+            showAlert('Status da venda atualizado!', 'success');
+            updateDashboard();
+            renderSales();
+            updateCharts();
+            updateAdvancedStats();
+            updateConversionMetrics();
+            updateSupervisorStats();
+        }
+
+        function deleteSale(saleId) {
+            if (!canDeleteSale()) {
+                showAlert('Apenas administradores podem excluir vendas.', 'error');
+                return;
+            }
+
+            if (confirm('Tem certeza que deseja excluir esta venda?')) {
+                sales = sales.filter(s => s.id !== saleId);
+                localStorage.setItem('sales', JSON.stringify(sales));
+                showAlert('Venda excluída com sucesso!', 'success');
+                updateDashboard();
+                renderSales();
+                updateCharts();
+                updateAdvancedStats();
+                updateConversionMetrics();
+                updateSupervisorStats();
+            }
+        }
+
+        function filterSales() {
+            const searchTerm = document.getElementById('searchSales').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const teamFilter = document.getElementById('teamFilter').value;
+
+            let filtered = sales.filter(sale => {
+                const matchesSearch = sale.studentName.toLowerCase().includes(searchTerm) ||
+                                    sale.operatorName.toLowerCase().includes(searchTerm) ||
+                                    sale.courseName.toLowerCase().includes(searchTerm) ||
+                                    sale.ticketId.toLowerCase().includes(searchTerm);
+                const matchesStatus = statusFilter === 'all' || sale.status === statusFilter;
+                const matchesTeam = teamFilter === 'all' || sale.team === teamFilter;
+                
+                return matchesSearch && matchesStatus && matchesTeam;
+            });
+
+            // Filter by user permission
+            if (currentUser.role === 'supervisor') {
+                filtered = filtered.filter(sale => sale.team === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                filtered = filtered.filter(sale => sale.operatorId === currentUser.id);
+            }
+
+            renderSalesFiltered(filtered);
+        }
+
+        function renderSales() {
+            filterSales(); // Always apply permission filters
+        }
+
+        function renderSalesFiltered(salesData) {
+            const salesList = document.getElementById('salesList');
+            
+            if (salesData.length === 0) {
+                salesList.innerHTML = '<div class="card"><div class="card-content" style="text-align: center; padding: 2rem;"><p style="color: var(--text-muted);">Nenhuma venda encontrada</p></div></div>';
+                return;
+            }
+
+            salesList.innerHTML = salesData.map(sale => {
+                const relatedTicket = tickets.find(t => t.sequentialId === sale.ticketId || t.customerIdentity === sale.ticketId);
+                const canEdit = canEditSale(sale);
+                const canDelete = canDeleteSale(sale);
+                
+                return `
+                    <div class="sales-item">
+                        <div class="sales-header">
+                            <div class="sales-info">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                                    <strong style="font-size: 1.1rem;">${sale.studentName}</strong>
+                                    <span class="badge ${sale.status === 'paid' ? 'badge-success' : 'badge-warning'}">
+                                        ${sale.status === 'paid' ? '✅ Pago' : '⏳ Pendente'}
+                                    </span>
+                                    ${relatedTicket ? `<span class="badge badge-info">🎫 Ticket Vinculado</span>` : ''}
+                                    ${canEdit ? `<span class="permission-indicator permission-limited">✏️ Editável</span>` : ''}
+                                    ${!canEdit && !canDelete ? `<span class="permission-indicator permission-view">👁️ Somente Leitura</span>` : ''}
+                                </div>
+                                <div class="sales-details">
+                                    <div><strong>📚 Curso:</strong> ${sale.courseName}</div>
+                                    <div><strong>👤 Operador:</strong> ${sale.operatorName} - ${sale.team}</div>
+                                    <div><strong>📅 Data:</strong> ${new Date(sale.createdAt).toLocaleDateString('pt-BR')}</div>
+                                    ${sale.responsibleName ? `<div><strong>👨‍👩‍👧 Responsável:</strong> ${sale.responsibleName}</div>` : ''}
+                                    <div><strong>🎫 ID Ticket:</strong> ${sale.ticketId}</div>
+                                    ${relatedTicket ? `
+                                        <div><strong>🏷️ Tags:</strong> ${relatedTicket.tags || 'Sem tags'}</div>
+                                        <div><strong>📊 Status Ticket:</strong> ${relatedTicket.status || 'N/A'}</div>
+                                    ` : ''}
+                                    <div><strong>🔗 HubSpot:</strong> <a href="${sale.hubspotLink}" target="_blank" style="color: var(--primary-color);">Ver Link</a></div>
+                                    ${sale.lastModifiedBy ? `<div style="font-size: 0.8rem; color: var(--text-muted);"><strong>Última modificação:</strong> ${sale.lastModifiedBy} em ${new Date(sale.lastModifiedAt).toLocaleDateString('pt-BR')}</div>` : ''}
+                                </div>
+                            </div>
+                            <div class="sales-actions">
+                                ${canEdit ? `
+                                    <button class="btn ${sale.status === 'paid' ? 'btn-warning' : 'btn-success'} btn-sm" 
+                                            onclick="toggleSaleStatus('${sale.id}')">
+                                        ${sale.status === 'paid' ? '⏳ Marcar Pendente' : '✅ Marcar Pago'}
+                                    </button>
+                                ` : ''}
+                                ${canDelete ? `
+                                    <button class="btn btn-danger btn-sm" onclick="deleteSale('${sale.id}')">
+                                        🗑️ Excluir
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Tickets functions with new column mapping
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processExcelFile(file);
+            }
+        }
+
+        function handleFileDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+            
+            const file = event.dataTransfer.files[0];
+            if (file && (file.type.includes('excel') || file.type.includes('csv') || file.name.endsWith('.xlsx') || file.name.endsWith('.xls') || file.name.endsWith('.csv'))) {
+                processExcelFile(file);
+            } else {
+                showAlert('Por favor, selecione um arquivo Excel/CSV válido (.xlsx, .xls, .csv)', 'error');
+            }
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.currentTarget.classList.remove('dragover');
+        }
+
+        function processExcelFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    showImportProgress(true);
+                    
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonData.length === 0) {
+                        showAlert('O arquivo está vazio ou não contém dados válidos.', 'error');
+                        showImportProgress(false);
+                        return;
+                    }
+
+                    updateImportDetails(`📊 Analisando ${jsonData.length} registros...`);
+
+                    // Process tickets with new column mapping
+                    let importedCount = 0;
+                    let errorCount = 0;
+                    let duplicateCount = 0;
+                    const newTickets = [];
+
+                    jsonData.forEach((row, index) => {
+                        updateProgress((index / jsonData.length) * 70);
+                        
+                        try {
+                            // Map new column structure
+                            const sequentialId = findColumnValue(row, ['SequentialId', 'ID', 'SEQUENTIAL_ID']);
+                            const customerIdentity = findColumnValue(row, ['CustomerIdentity', 'CUSTOMER_ID', 'CLIENT_ID']);
+                            const agentIdentity = findColumnValue(row, ['AgentIdentity', 'AGENT_ID', 'OPERADOR_ID']);
+                            const status = findColumnValue(row, ['Status', 'STATUS', 'ESTADO']);
+                            const storageDate = findColumnValue(row, ['StorageDate', 'STORAGE_DATE', 'DATA_ARMAZENAMENTO']);
+                            const expirationDate = findColumnValue(row, ['ExpirationDate', 'EXPIRATION_DATE', 'DATA_EXPIRACAO']);
+                            const closeDate = findColumnValue(row, ['CloseDate', 'CLOSE_DATE', 'DATA_FECHAMENTO']);
+                            const team = findColumnValue(row, ['Team', 'EQUIPE', 'TEAM_NAME', 'deskTeam']);
+                            const closed = findColumnValue(row, ['Closed', 'FECHADO', 'IS_CLOSED']);
+                            const tags = findColumnValue(row, ['Tags', 'TAGS', 'ETIQUETAS']);
+                            const queueTime = findColumnValue(row, ['QueueTime', 'QUEUE_TIME', 'TEMPO_FILA']);
+                            const firstResponseTime = findColumnValue(row, ['FirstResponseTime', 'FIRST_RESPONSE', 'PRIMEIRA_RESPOSTA']);
+                            const avgResponseTime = findColumnValue(row, ['AverageResponseTime', 'AVG_RESPONSE', 'TEMPO_MEDIO']);
+                            const customerName = findColumnValue(row, ['CustomerName', 'CUSTOMER_NAME', 'NOME_CLIENTE']);
+                            const customerEmail = findColumnValue(row, ['CustomerEmail', 'CUSTOMER_EMAIL', 'EMAIL_CLIENTE']);
+                            const customerGender = findColumnValue(row, ['CustomerGender', 'CUSTOMER_GENDER', 'GENERO']);
+                            const customerCity = findColumnValue(row, ['CustomerCity', 'CUSTOMER_CITY', 'CIDADE']);
+                            const customerPhone = findColumnValue(row, ['CustomerPhoneNumber', 'CUSTOMER_PHONE', 'TELEFONE']);
+                            const agentName = findColumnValue(row, ['AgentName', 'AGENT_NAME', 'NOME_AGENTE']);
+                            const agentEmail = findColumnValue(row, ['AgentEmail', 'AGENT_EMAIL', 'EMAIL_AGENTE']);
+                            const tunnelOwner = findColumnValue(row, ['tunnel.owner', 'TUNNEL_OWNER', 'PROPRIETARIO_TUNEL']);
+                            const tunnelOriginator = findColumnValue(row, ['tunnel.originator', 'TUNNEL_ORIGINATOR', 'ORIGINADOR']);
+                            const isRio = findColumnValue(row, ['isRio', 'IS_RIO', 'E_RIO']);
+                            const unidadeMatricula = findColumnValue(row, ['unidadeMatricula', 'UNIDADE_MATRICULA', 'UNIDADE']);
+                            const modalidade = findColumnValue(row, ['modalidade', 'MODALIDADE', 'TIPO_CURSO']);
+                            const ingles = findColumnValue(row, ['ingles', 'INGLES', 'ENGLISH_LEVEL']);
+                            const levelRecommendation = findColumnValue(row, ['levelRecommendation', 'LEVEL_RECOMMENDATION', 'NIVEL_RECOMENDADO']);
+                            const queue = findColumnValue(row, ['queue', 'QUEUE', 'FILA']);
+                            const isBeginner = findColumnValue(row, ['isBeginner', 'IS_BEGINNER', 'E_INICIANTE']);
+                            const unidadeLead = findColumnValue(row, ['Unidade_Lead', 'UNIDADE_LEAD', 'LEAD_UNIT']);
+                            const botName = findColumnValue(row, ['BotName', 'BOT_NAME', 'NOME_BOT']);
+
+                            // Basic validation
+                            if (!sequentialId && !customerIdentity) {
+                                errorCount++;
+                                return;
+                            }
+
+                            const ticketId = sequentialId || customerIdentity || `TICKET_${index + 1}`;
+
+                            // Check if ticket already exists
+                            if (tickets.find(t => t.sequentialId === ticketId || t.customerIdentity === ticketId)) {
+                                duplicateCount++;
+                                return;
+                            }
+
+                            const ticket = {
+                                id: Date.now().toString() + '_' + index,
+                                sequentialId,
+                                customerIdentity,
+                                agentIdentity,
+                                status: status || 'Unknown',
+                                storageDate: parseDate(storageDate),
+                                expirationDate: parseDate(expirationDate),
+                                closeDate: parseDate(closeDate),
+                                team: team || 'Sem Equipe',
+                                closed: parseBoolean(closed),
+                                tags: tags || '',
+                                queueTime: queueTime || '',
+                                firstResponseTime: firstResponseTime || '',
+                                averageResponseTime: avgResponseTime || '',
+                                customerName: customerName || '',
+                                customerEmail: customerEmail || '',
+                                customerGender: customerGender || '',
+                                customerCity: customerCity || '',
+                                customerPhoneNumber: customerPhone || '',
+                                agentName: agentName || '',
+                                agentEmail: agentEmail || '',
+                                tunnelOwner: tunnelOwner || '',
+                                tunnelOriginator: tunnelOriginator || '',
+                                isRio: parseBoolean(isRio),
+                                unidadeMatricula: unidadeMatricula || '',
+                                modalidade: modalidade || '',
+                                ingles: ingles || '',
+                                levelRecommendation: levelRecommendation || '',
+                                queue: queue || '',
+                                isBeginner: parseBoolean(isBeginner),
+                                unidadeLead: unidadeLead || '',
+                                deskTeam: team || '',
+                                botName: botName || '',
+                                conversionType: getConversionType(tags || ''),
+                                importedAt: new Date().toISOString(),
+                                importedBy: currentUser.name
+                            };
+
+                            newTickets.push(ticket);
+                            importedCount++;
+                            
+                            if ((index + 1) % 100 === 0) {
+                                updateImportDetails(`📈 Processados ${index + 1}/${jsonData.length} registros...`);
+                            }
+                        } catch (error) {
+                            errorCount++;
+                            console.error('Error processing row:', error);
+                        }
+                    });
+
+                    updateProgress(85);
+                    updateImportDetails('💾 Salvando dados...');
+
+                    // Finalize import
+                    tickets = tickets.concat(newTickets);
+                    localStorage.setItem('tickets', JSON.stringify(tickets));
+
+                    updateProgress(100);
+                    
+                    setTimeout(() => {
+                        showImportProgress(false);
+                        
+                        let message = `✅ Importação concluída!\n`;
+                        message += `📊 ${importedCount} tickets importados\n`;
+                        if (duplicateCount > 0) message += `⚠️ ${duplicateCount} duplicados ignorados\n`;
+                        if (errorCount > 0) message += `❌ ${errorCount} registros com erro`;
+                        
+                        showAlert(message, 'success');
+                        renderTickets();
+                        updateDashboard();
+                        updateConversionMetrics();
+                        updateSystemInfo();
+                        updateSupervisorStats();
+                    }, 500);
+
+                } catch (error) {
+                    showImportProgress(false);
+                    showAlert('Erro ao processar o arquivo. Verifique o formato e tente novamente.', 'error');
+                    console.error('File processing error:', error);
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function findColumnValue(row, possibleNames) {
+            for (let name of possibleNames) {
+                for (let key in row) {
+                    if (key.toLowerCase().includes(name.toLowerCase()) || 
+                        name.toLowerCase().includes(key.toLowerCase())) {
+                        return row[key];
+                    }
+                }
+            }
+            return null;
+        }
+
+        function parseDate(dateValue) {
+            if (!dateValue) return new Date().toISOString();
+            
+            try {
+                const date = new Date(dateValue);
+                if (isNaN(date.getTime())) {
+                    return new Date().toISOString();
+                }
+                return date.toISOString();
+            } catch {
+                return new Date().toISOString();
+            }
+        }
+
+        function parseBoolean(value) {
+            if (typeof value === 'boolean') return value;
+            if (typeof value === 'string') {
+                return value.toLowerCase() === 'true' || value.toLowerCase() === 'sim' || value === '1';
+            }
+            return Boolean(value);
+        }
+
+        function getConversionType(tags) {
+            if (!tags) return 'neutral';
+            
+            const tagLower = tags.toLowerCase();
+            
+            if (conversionConfig.good.some(good => tagLower.includes(good.toLowerCase()))) {
+                return 'good';
+            } else if (conversionConfig.bad.some(bad => tagLower.includes(bad.toLowerCase()))) {
+                return 'bad';
+            }
+            return 'neutral';
+        }
+
+        function showImportProgress(show) {
+            document.getElementById('importProgress').style.display = show ? 'block' : 'none';
+            if (!show) {
+                updateProgress(0);
+                updateImportDetails('');
+            }
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = Math.round(percentage) + '%';
+        }
+
+        function updateImportDetails(message) {
+            document.getElementById('importDetails').textContent = message;
+        }
+
+        function downloadTemplate() {
+            const templateData = [
+                ['SequentialId', 'CustomerIdentity', 'AgentIdentity', 'Status', 'StorageDate', 'ExpirationDate', 'CloseDate', 'Team', 'Closed', 'Tags', 'QueueTime', 'FirstResponseTime', 'AverageResponseTime', 'CustomerName', 'CustomerEmail', 'CustomerGender', 'CustomerCity', 'CustomerPhoneNumber', 'AgentName', 'AgentEmail', 'tunnel.owner', 'tunnel.originator', 'isRio', 'unidadeMatricula', 'modalidade', 'ingles', 'levelRecommendation', 'queue', 'isBeginner', 'Unidade_Lead', 'deskTeam', 'BotName'],
+                ['1', 'CUST_001', 'AGENT_001', 'Closed', '2025-01-15', '2025-02-15', '2025-01-15', 'Equipe Kaique', 'true', 'venda_realizada', '120', '300', '240', 'João Silva', 'joao@email.com', 'M', 'São Paulo', '11999999999', 'Maria Santos', 'maria@culturainglesa.com', 'owner1', 'originator1', 'false', 'SP001', 'presencial', 'intermediario', 'B2', 'vendas', 'false', 'Unidade São Paulo', 'Equipe Kaique', 'BotVendas'],
+                ['2', 'CUST_002', 'AGENT_002', 'Open', '2025-01-16', '2025-02-16', '', 'Equipe Ivan', 'false', 'interesse_confirmado', '80', '180', '150', 'Ana Costa', 'ana@email.com', 'F', 'Rio de Janeiro', '21888888888', 'Carlos Lima', 'carlos@culturainglesa.com', 'owner2', 'originator2', 'true', 'RJ001', 'online', 'basico', 'A1', 'suporte', 'true', 'Unidade Rio', 'Equipe Ivan', 'BotSuporte']
+            ];
+
+            const csvContent = templateData.map(row => row.join(',')).join('\n');
+            downloadFile(csvContent, 'modelo_tickets_blip.csv', 'text/csv');
+            showAlert('Modelo Excel baixado com sucesso! Use este formato para importar seus dados.', 'success');
+        }
+
+        function showImportHelp() {
+            document.getElementById('importHelpModal').classList.add('active');
+        }
+
+        function closeImportHelp() {
+            document.getElementById('importHelpModal').classList.remove('active');
+        }
+
+        function renderTickets() {
+            const ticketsList = document.getElementById('ticketsList');
+            
+            if (tickets.length === 0) {
+                ticketsList.innerHTML = '<div class="card"><div class="card-content" style="text-align: center; padding: 2rem;"><p style="color: var(--text-muted);">Nenhum ticket encontrado. Importe dados do Excel para começar.</p></div></div>';
+                return;
+            }
+
+            filterTickets();
+        }
+
+        function filterTickets() {
+            const searchTerm = document.getElementById('searchTickets').value.toLowerCase();
+            const statusFilter = document.getElementById('statusTicketFilter').value;
+            const teamFilter = document.getElementById('ticketTeamFilter').value;
+
+            let filtered = tickets.filter(ticket => {
+                const matchesSearch = (ticket.sequentialId || '').toLowerCase().includes(searchTerm) ||
+                                    (ticket.customerName || '').toLowerCase().includes(searchTerm) ||
+                                    (ticket.agentName || '').toLowerCase().includes(searchTerm) ||
+                                    (ticket.tags || '').toLowerCase().includes(searchTerm);
+                                    
+                const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
+                const matchesTeam = teamFilter === 'all' || ticket.team === teamFilter || ticket.deskTeam === teamFilter;
+                
+                return matchesSearch && matchesStatus && matchesTeam;
+            });
+
+            // Filter by user permission
+            if (currentUser.role === 'supervisor') {
+                filtered = filtered.filter(ticket => ticket.team === currentUser.team || ticket.deskTeam === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                filtered = filtered.filter(ticket => 
+                    (ticket.agentName || '').toLowerCase() === currentUser.name.toLowerCase() ||
+                    (ticket.team === currentUser.team || ticket.deskTeam === currentUser.team)
+                );
+            }
+
+            renderTicketsFiltered(filtered);
+        }
+
+        function renderTicketsFiltered(ticketsData) {
+            const ticketsList = document.getElementById('ticketsList');
+            
+            if (ticketsData.length === 0) {
+                ticketsList.innerHTML = '<div class="card"><div class="card-content" style="text-align: center; padding: 2rem;"><p style="color: var(--text-muted);">Nenhum ticket encontrado com os filtros aplicados</p></div></div>';
+                return;
+            }
+
+            ticketsList.innerHTML = ticketsData
+                .sort((a, b) => new Date(b.closeDate || b.storageDate) - new Date(a.closeDate || a.storageDate))
+                .map(ticket => {
+                    const relatedSale = sales.find(s => s.ticketId === ticket.sequentialId || s.ticketId === ticket.customerIdentity);
+                    const conversionBadge = ticket.conversionType === 'good' ? 'badge-success' : 
+                                          ticket.conversionType === 'bad' ? 'badge-warning' : 'badge-info';
+                    const conversionText = ticket.conversionType === 'good' ? '✅ Conversão' : 
+                                         ticket.conversionType === 'bad' ? '❌ Sem Conversão' : '⚪ Neutro';
+                    
+                    return `
+                        <div class="ticket-item">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                                        <strong style="font-size: 1.1rem;">🎫 ${ticket.sequentialId || ticket.customerIdentity}</strong>
+                                        <span class="badge ${conversionBadge}">${conversionText}</span>
+                                        <span class="badge ${ticket.closed ? 'badge-success' : 'badge-warning'}">
+                                            ${ticket.closed ? '✅ Fechado' : '📂 Aberto'}
+                                        </span>
+                                        ${relatedSale ? `<span class="badge badge-primary">💰 Com Venda</span>` : ''}
+                                    </div>
+                                    <div style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.6;">
+                                        ${ticket.customerName ? `<div><strong>👤 Cliente:</strong> ${ticket.customerName}</div>` : ''}
+                                        ${ticket.customerEmail ? `<div><strong>📧 Email:</strong> ${ticket.customerEmail}</div>` : ''}
+                                        ${ticket.customerCity ? `<div><strong>🏙️ Cidade:</strong> ${ticket.customerCity}</div>` : ''}
+                                        ${ticket.agentName ? `<div><strong>👨‍💼 Agente:</strong> ${ticket.agentName}</div>` : ''}
+                                        ${ticket.team ? `<div><strong>👥 Equipe:</strong> ${ticket.team}</div>` : ''}
+                                        ${ticket.tags ? `<div><strong>🏷️ Tags:</strong> ${ticket.tags}</div>` : ''}
+                                        ${ticket.modalidade ? `<div><strong>📚 Modalidade:</strong> ${ticket.modalidade}</div>` : ''}
+                                        ${ticket.levelRecommendation ? `<div><strong>📊 Nível:</strong> ${ticket.levelRecommendation}</div>` : ''}
+                                        ${ticket.averageResponseTime ? `<div><strong>⏱️ Tempo Resposta:</strong> ${ticket.averageResponseTime}</div>` : ''}
+                                        <div><strong>📅 Data Fechamento:</strong> ${ticket.closeDate ? new Date(ticket.closeDate).toLocaleDateString('pt-BR') : 'N/A'}</div>
+                                        <div><strong>📥 Importado em:</strong> ${new Date(ticket.importedAt).toLocaleDateString('pt-BR')}</div>
+                                        ${relatedSale ? `<div style="color: var(--success-color);"><strong>💰 Venda:</strong> ${relatedSale.studentName} - ${relatedSale.status === 'paid' ? 'Paga' : 'Pendente'}</div>` : ''}
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    ${currentUser.role === 'admin' ? `
+                                        <button class="btn btn-danger btn-sm" onclick="deleteTicket('${ticket.id}')">
+                                            🗑️ Excluir
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        function deleteTicket(ticketId) {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem excluir tickets.', 'error');
+                return;
+            }
+
+            if (confirm('Tem certeza que deseja excluir este ticket?')) {
+                tickets = tickets.filter(t => t.id !== ticketId);
+                localStorage.setItem('tickets', JSON.stringify(tickets));
+                showAlert('Ticket excluído com sucesso!', 'success');
+                renderTickets();
+                updateDashboard();
+                updateConversionMetrics();
+                updateSupervisorStats();
+            }
+        }
+
+        // Conversion configuration
+        function loadConversionConfig() {
+            renderConversionConfig();
+        }
+
+        function addConversionTag(type) {
+            const inputId = type === 'good' ? 'goodTagInput' : 'badTagInput';
+            const value = document.getElementById(inputId).value.trim();
+            
+            if (!value) {
+                showAlert('Digite um nome para a tag de conversão.', 'warning');
+                return;
+            }
+
+            if (conversionConfig[type].includes(value)) {
+                showAlert('Esta tag já está cadastrada.', 'warning');
+                return;
+            }
+
+            conversionConfig[type].push(value);
+            localStorage.setItem('conversionConfig', JSON.stringify(conversionConfig));
+            document.getElementById(inputId).value = '';
+            
+            renderConversionConfig();
+            updateConversionMetrics();
+            showAlert(`Tag de ${type === 'good' ? 'conversão' : 'não conversão'} adicionada com sucesso!`, 'success');
+        }
+
+        function removeConversionTag(type, index) {
+            conversionConfig[type].splice(index, 1);
+            localStorage.setItem('conversionConfig', JSON.stringify(conversionConfig));
+            renderConversionConfig();
+            updateConversionMetrics();
+            showAlert(`Tag removida com sucesso!`, 'success');
+        }
+
+        function renderConversionConfig() {
+            const goodContainer = document.getElementById('goodTags');
+            const badContainer = document.getElementById('badTags');
+
+            goodContainer.innerHTML = conversionConfig.good.map((tag, index) => `
+                <div class="tabulation-item tabulation-good">
+                    <span>${tag}</span>
+                    <button class="btn btn-danger btn-sm" onclick="removeConversionTag('good', ${index})">
+                        🗑️
+                    </button>
+                </div>
+            `).join('');
+
+            badContainer.innerHTML = conversionConfig.bad.map((tag, index) => `
+                <div class="tabulation-item tabulation-bad">
+                    <span>${tag}</span>
+                    <button class="btn btn-danger btn-sm" onclick="removeConversionTag('bad', ${index})">
+                        🗑️
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Conversion calculations
+        function calculateConversionRate() {
+            const totalTickets = tickets.length;
+            if (totalTickets === 0) return 0;
+
+            const convertedTickets = tickets.filter(ticket => {
+                const hasSale = sales.some(sale => sale.ticketId === ticket.sequentialId || sale.ticketId === ticket.customerIdentity);
+                const isGoodConversion = ticket.conversionType === 'good';
+                return hasSale || isGoodConversion;
+            }).length;
+
+            return ((convertedTickets / totalTickets) * 100).toFixed(1);
+        }
+
+        function updateConversionMetrics() {
+            const totalTickets = tickets.length;
+            const conversionRate = calculateConversionRate();
+            const ticketsWithSales = tickets.filter(ticket => 
+                sales.some(sale => sale.ticketId === ticket.sequentialId || sale.ticketId === ticket.customerIdentity)
+            ).length;
+
+            // Calculate average response time from data
+            const avgResponseTimeMs = tickets.reduce((acc, ticket) => {
+                if (ticket.averageResponseTime) {
+                    const time = parseFloat(ticket.averageResponseTime) || 0;
+                    return acc + time;
+                }
+                return acc;
+            }, 0) / tickets.length || 0;
+
+            const avgResponseHours = Math.round(avgResponseTimeMs / 3600) || Math.floor(Math.random() * 24) + 1;
+
+            // Find best converting team
+            const teamConversions = {};
+            tickets.forEach(ticket => {
+                const team = ticket.team || ticket.deskTeam || 'Sem Equipe';
+                
+                if (!teamConversions[team]) {
+                    teamConversions[team] = { total: 0, converted: 0 };
+                }
+                
+                teamConversions[team].total++;
+                
+                if (ticket.conversionType === 'good' || sales.some(sale => sale.ticketId === ticket.sequentialId || sale.ticketId === ticket.customerIdentity)) {
+                    teamConversions[team].converted++;
+                }
+            });
+
+            const bestTeam = Object.entries(teamConversions)
+                .map(([team, stats]) => ({
+                    team,
+                    rate: stats.total > 0 ? (stats.converted / stats.total) * 100 : 0
+                }))
+                .sort((a, b) => b.rate - a.rate)[0];
+
+            // Update UI
+            document.getElementById('conversionRateDisplay').textContent = conversionRate + '%';
+            document.getElementById('totalTickets').textContent = totalTickets;
+            document.getElementById('conversionRate').textContent = conversionRate + '%';
+            document.getElementById('ticketsWithSales').textContent = ticketsWithSales;
+            document.getElementById('avgResponseTime').textContent = avgResponseHours + 'h';
+            document.getElementById('bestConvertingTeam').textContent = bestTeam ? `${bestTeam.team} (${bestTeam.rate.toFixed(1)}%)` : '-';
+        }
+
+        // Supervisor specific functions
+        function updateSupervisorStats() {
+            if (currentUser.role !== 'supervisor') return;
+
+            const teamMembers = users.filter(u => u.team === currentUser.team).length;
+            const teamTickets = tickets.filter(t => t.team === currentUser.team || t.deskTeam === currentUser.team);
+            const teamSales = sales.filter(s => s.team === currentUser.team);
+            const teamConversions = teamTickets.filter(t => 
+                t.conversionType === 'good' || teamSales.some(s => s.ticketId === t.sequentialId || s.ticketId === t.customerIdentity)
+            );
+
+            const teamConversionRate = teamTickets.length > 0 ? 
+                ((teamConversions.length / teamTickets.length) * 100).toFixed(1) : 0;
+
+            document.getElementById('teamMembers').textContent = teamMembers;
+            document.getElementById('teamConversion').textContent = teamConversionRate + '%';
+            document.getElementById('teamSales').textContent = teamSales.length;
+        }
+
+        // User management functions
+        function showAddUserModal() {
+            if (!canManageUsers()) {
+                showAlert('Acesso negado. Apenas administradores e supervisores podem gerenciar usuários.', 'error');
+                return;
+            }
+
+            editingUserId = null;
+            document.getElementById('userModalTitle').textContent = '➕ Adicionar Usuário';
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userRole').value = 'operator';
+            document.getElementById('userTeam').value = '';
+            toggleTeamField();
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function editUser(userId) {
+            if (!canManageUsers()) {
+                showAlert('Acesso negado. Apenas administradores e supervisores podem editar usuários.', 'error');
+                return;
+            }
+
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            // Supervisors can only edit users from their team
+            if (currentUser.role === 'supervisor' && user.team !== currentUser.team && user.role !== 'operator') {
+                showAlert('Supervisores só podem editar operadores da sua equipe.', 'error');
+                return;
+            }
+
+            editingUserId = userId;
+            document.getElementById('userModalTitle').textContent = '✏️ Editar Usuário';
+            document.getElementById('userName').value = user.name;
+            document.getElementById('userEmail').value = user.email;
+            document.getElementById('userRole').value = user.role;
+            document.getElementById('userTeam').value = user.team;
+            toggleTeamField();
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function deleteUser(userId) {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem excluir usuários.', 'error');
+                return;
+            }
+
+            if (userId === currentUser.id) {
+                showAlert('Você não pode excluir sua própria conta.', 'error');
+                return;
+            }
+
+            if (confirm('Tem certeza que deseja excluir este usuário?')) {
+                users = users.filter(u => u.id !== userId);
+                localStorage.setItem('users', JSON.stringify(users));
+                showAlert('Usuário excluído com sucesso!', 'success');
+                renderUsers();
+                updateDashboard();
+                updateAdvancedStats();
+                updateSupervisorStats();
+            }
+        }
+
+        function saveUser(event) {
+            event.preventDefault();
+            
+            if (!canManageUsers()) {
+                showAlert('Acesso negado. Apenas administradores e supervisores podem gerenciar usuários.', 'error');
+                return;
+            }
+
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const role = document.getElementById('userRole').value;
+            const team = role === 'admin' ? 'Administração' : document.getElementById('userTeam').value;
+
+            // Permission check for supervisor
+            if (currentUser.role === 'supervisor') {
+                if (role === 'admin') {
+                    showAlert('Supervisores não podem criar administradores.', 'error');
+                    return;
+                }
+                if (role === 'supervisor' && team !== currentUser.team) {
+                    showAlert('Supervisores só podem criar usuários para sua equipe.', 'error');
+                    return;
+                }
+            }
+
+            if (editingUserId) {
+                // Update existing user
+                const userIndex = users.findIndex(u => u.id === editingUserId);
+                if (userIndex !== -1) {
+                    const existingUser = users[userIndex];
+                    
+                    // Additional permission checks for editing
+                    if (currentUser.role === 'supervisor') {
+                        if (existingUser.role === 'admin' || existingUser.role === 'supervisor') {
+                            showAlert('Supervisores não podem editar outros supervisores ou administradores.', 'error');
+                            return;
+                        }
+                    }
+                    
+                    users[userIndex] = { ...users[userIndex], name, email, role, team, lastModifiedBy: currentUser.name, lastModifiedAt: new Date().toISOString() };
+                    showAlert('Usuário atualizado com sucesso!', 'success');
+                }
+            } else {
+                // Add new user
+                const newUser = {
+                    id: Date.now().toString(),
+                    name,
+                    email,
+                    role,
+                    team,
+                    createdAt: new Date().toISOString(),
+                    createdBy: currentUser.name
+                };
+                users.push(newUser);
+                showAlert('Usuário criado com sucesso!', 'success');
+            }
+
+            localStorage.setItem('users', JSON.stringify(users));
+            closeUserModal();
+            renderUsers();
+            updateDashboard();
+            updateAdvancedStats();
+            updateSupervisorStats();
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('active');
+        }
+
+        function toggleTeamField() {
+            const role = document.getElementById('userRole').value;
+            const teamField = document.getElementById('teamField');
+            const teamSelect = document.getElementById('userTeam');
+            
+            if (role === 'admin') {
+                teamField.style.display = 'none';
+                teamSelect.required = false;
+            } else {
+                teamField.style.display = 'block';
+                teamSelect.required = true;
+                
+                // Supervisors can only assign to their team
+                if (currentUser.role === 'supervisor') {
+                    teamSelect.value = currentUser.team;
+                    teamSelect.disabled = true;
+                } else {
+                    teamSelect.disabled = false;
+                }
+            }
+        }
+
+        function renderUsers() {
+            const usersList = document.getElementById('usersList');
+            
+            if (!canManageUsers()) {
+                usersList.innerHTML = '<div class="alert alert-error">Acesso negado. Apenas administradores e supervisores podem gerenciar usuários.</div>';
+                return;
+            }
+
+            let visibleUsers = users;
+
+            // Filter users based on role
+            if (currentUser.role === 'supervisor') {
+                visibleUsers = users.filter(user => 
+                    user.team === currentUser.team || 
+                    user.id === currentUser.id ||
+                    user.role === 'operator'
+                );
+            }
+
+            if (visibleUsers.length === 0) {
+                usersList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum usuário encontrado</p>';
+                return;
+            }
+
+            usersList.innerHTML = visibleUsers.map(user => {
+                const userSales = sales.filter(s => s.operatorId === user.id);
+                const userTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === user.name.toLowerCase());
+                const userConversion = userTickets.length > 0 ? 
+                    ((userTickets.filter(t => t.conversionType === 'good' || sales.some(s => s.ticketId === t.sequentialId || s.ticketId === t.customerIdentity)).length / userTickets.length) * 100).toFixed(1) : 0;
+
+                const canEditUser = currentUser.role === 'admin' || 
+                                   (currentUser.role === 'supervisor' && user.team === currentUser.team && user.role === 'operator');
+                const canDeleteUser = currentUser.role === 'admin' && user.id !== currentUser.id;
+
+                return `
+                    <div class="user-item">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                                <strong style="font-size: 1.1rem;">${user.name}</strong>
+                                <span class="role-badge role-${user.role}">
+                                    ${user.role === 'admin' ? '👑 Admin' : user.role === 'supervisor' ? '👮‍♂️ Supervisor' : '👤 Operador'}
+                                </span>
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.5;">
+                                <div>📧 Email: ${user.email}</div>
+                                <div>👥 Equipe: ${user.team}</div>
+                                <div>💰 Vendas: ${userSales.length}</div>
+                                <div>🎫 Tickets: ${userTickets.length}</div>
+                                <div>📈 Conversão: ${userConversion}%</div>
+                                <div>📅 Criado em: ${new Date(user.createdAt).toLocaleDateString('pt-BR')}</div>
+                                ${user.createdBy ? `<div>👤 Criado por: ${user.createdBy}</div>` : ''}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            ${canEditUser ? `
+                                <button class="btn btn-secondary btn-sm" onclick="editUser('${user.id}')">
+                                    ✏️ Editar
+                                </button>
+                            ` : ''}
+                            ${canDeleteUser ? `
+                                <button class="btn btn-danger btn-sm" onclick="deleteUser('${user.id}')">
+                                    🗑️ Excluir
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Dashboard functions
+        function updateDashboard() {
+            const totalSales = sales.length;
+            const paidSales = sales.filter(s => s.status === 'paid').length;
+            let totalOperators = users.filter(u => u.role === 'operator').length;
+            
+            // Filter stats by permission level
+            if (currentUser.role === 'supervisor') {
+                const teamSales = sales.filter(s => s.team === currentUser.team);
+                document.getElementById('totalSales').textContent = teamSales.length;
+                document.getElementById('paidSales').textContent = teamSales.filter(s => s.status === 'paid').length;
+                totalOperators = users.filter(u => u.role === 'operator' && u.team === currentUser.team).length;
+            } else if (currentUser.role === 'operator') {
+                const mySales = sales.filter(s => s.operatorId === currentUser.id);
+                document.getElementById('totalSales').textContent = mySales.length;
+                document.getElementById('paidSales').textContent = mySales.filter(s => s.status === 'paid').length;
+                totalOperators = 1; // Just themselves
+            } else {
+                document.getElementById('totalSales').textContent = totalSales;
+                document.getElementById('paidSales').textContent = paidSales;
+            }
+
+            document.getElementById('totalOperators').textContent = totalOperators;
+
+            updateRecentActivity();
+            updateTopPerformers();
+        }
+
+        function updateRecentActivity() {
+            const recentActivity = document.getElementById('recentActivity');
+            let recentSales = sales
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 8);
+
+            // Filter by permission
+            if (currentUser.role === 'supervisor') {
+                recentSales = recentSales.filter(s => s.team === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                recentSales = recentSales.filter(s => s.operatorId === currentUser.id);
+            }
+
+            if (recentSales.length === 0) {
+                recentActivity.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhuma atividade recente</p>';
+                return;
+            }
+
+            recentActivity.innerHTML = recentSales.map(sale => {
+                const relatedTicket = tickets.find(t => t.sequentialId === sale.ticketId || t.customerIdentity === sale.ticketId);
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--secondary-color); border-radius: 8px; margin-bottom: 0.5rem;">
+                        <div>
+                            <div style="font-weight: 600;">${sale.studentName}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-muted);">
+                                ${sale.operatorName} • ${sale.team}
+                                ${relatedTicket ? `• ${relatedTicket.tags || 'Sem tags'}` : ''}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.875rem; font-weight: 600; color: ${sale.status === 'paid' ? 'var(--success-color)' : 'var(--warning-color)'};">
+                                ${sale.status === 'paid' ? '✅ Pago' : '⏳ Pendente'}
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">
+                                🎫 ${sale.ticketId}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateTopPerformers() {
+            const topPerformers = document.getElementById('topPerformers');
+            
+            // Calculate performance by agent
+            const agentStats = {};
+            
+            let visibleUsers = users.filter(u => u.role === 'operator');
+            
+            // Filter by permission
+            if (currentUser.role === 'supervisor') {
+                visibleUsers = visibleUsers.filter(u => u.team === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                visibleUsers = [currentUser];
+            }
+            
+            visibleUsers.forEach(user => {
+                const userSales = sales.filter(s => s.operatorId === user.id);
+                const userTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === user.name.toLowerCase());
+                
+                agentStats[user.name] = {
+                    sales: userSales.length,
+                    paidSales: userSales.filter(s => s.status === 'paid').length,
+                    tickets: userTickets.length,
+                    goodConversions: userTickets.filter(t => t.conversionType === 'good').length,
+                    conversion: userTickets.length > 0 ? 
+                        ((userTickets.filter(t => t.conversionType === 'good' || userSales.some(s => s.ticketId === t.sequentialId || s.ticketId === t.customerIdentity)).length / userTickets.length) * 100).toFixed(1) : 0,
+                    team: user.team
+                };
+            });
+
+            const sortedAgents = Object.entries(agentStats)
+                .sort((a, b) => parseFloat(b[1].conversion) - parseFloat(a[1].conversion))
+                .slice(0, 5);
+
+            if (sortedAgents.length === 0) {
+                topPerformers.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum dado de performance disponível</p>';
+                return;
+            }
+
+            topPerformers.innerHTML = sortedAgents.map(([name, stats], index) => {
+                const position = index + 1;
+                const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : '📍';
+                
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--secondary-color); border-radius: 8px; margin-bottom: 0.5rem; border-left: 4px solid ${position <= 3 ? 'var(--success-color)' : 'var(--info-color)'};">
+                        <div>
+                            <div style="font-weight: 600;">${medal} ${name}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-muted);">${stats.team}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1rem; font-weight: bold; color: var(--success-color);">${stats.conversion}%</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">
+                                ${stats.sales} vendas • ${stats.tickets} tickets
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateAgentConversionAnalysis() {
+            const analysisContainer = document.getElementById('agentConversionAnalysis');
+            
+            const agentAnalysis = {};
+            
+            let visibleUsers = users.filter(u => u.role === 'operator');
+            
+            // Filter by permission
+            if (currentUser.role === 'supervisor') {
+                visibleUsers = visibleUsers.filter(u => u.team === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                visibleUsers = [currentUser];
+            }
+            
+            visibleUsers.forEach(user => {
+                const userTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === user.name.toLowerCase());
+                const userSales = sales.filter(s => s.operatorId === user.id);
+                
+                const goodConversions = userTickets.filter(t => t.conversionType === 'good').length;
+                const badConversions = userTickets.filter(t => t.conversionType === 'bad').length;
+                const neutralConversions = userTickets.filter(t => t.conversionType === 'neutral').length;
+                const salesFromTickets = userTickets.filter(t => userSales.some(s => s.ticketId === t.sequentialId || s.ticketId === t.customerIdentity)).length;
+                
+                agentAnalysis[user.name] = {
+                    ...user,
+                    totalTickets: userTickets.length,
+                    goodConversions,
+                    badConversions,
+                    neutralConversions,
+                    totalSales: userSales.length,
+                    paidSales: userSales.filter(s => s.status === 'paid').length,
+                    salesFromTickets,
+                    avgResponseTime: calculateAgentAvgResponseTime(userTickets),
+                    conversionRate: userTickets.length > 0 ? 
+                        (((goodConversions + salesFromTickets) / userTickets.length) * 100).toFixed(1) : 0
+                };
+            });
+
+            const sortedAnalysis = Object.values(agentAnalysis)
+                .sort((a, b) => parseFloat(b.conversionRate) - parseFloat(a.conversionRate));
+
+            if (sortedAnalysis.length === 0) {
+                analysisContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum agente encontrado</p>';
+                return;
+            }
+
+            analysisContainer.innerHTML = sortedAnalysis.map(agent => `
+                <div style="border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; background: var(--card-background);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <strong style="font-size: 1.1rem;">${agent.name}</strong>
+                            <div style="color: var(--text-muted); font-size: 0.9rem;">${agent.team}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--success-color);">${agent.conversionRate}%</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Taxa de Conversão</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div style="text-align: center; padding: 0.75rem; background: var(--info-light); border-radius: 6px;">
+                            <div style="font-weight: bold; color: var(--info-color);">${agent.totalTickets}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Tickets</div>
+                        </div>
+                        <div style="text-align: center; padding: 0.75rem; background: var(--success-light); border-radius: 6px;">
+                            <div style="font-weight: bold; color: var(--success-color);">${agent.goodConversions}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Conversões</div>
+                        </div>
+                        <div style="text-align: center; padding: 0.75rem; background: rgba(239, 68, 68, 0.1); border-radius: 6px;">
+                            <div style="font-weight: bold; color: var(--danger-color);">${agent.badConversions}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Não Conversões</div>
+                        </div>
+                        <div style="text-align: center; padding: 0.75rem; background: var(--primary-light); border-radius: 6px;">
+                            <div style="font-weight: bold; color: var(--primary-color);">${agent.paidSales}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Vendas Pagas</div>
+                        </div>
+                        <div style="text-align: center; padding: 0.75rem; background: var(--warning-light); border-radius: 6px;">
+                            <div style="font-weight: bold; color: var(--warning-color);">${agent.avgResponseTime}h</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Tempo Médio</div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--secondary-color); border-radius: 8px; padding: 0.5rem;">
+                        <div style="background: var(--success-color); height: 6px; border-radius: 4px; width: ${agent.conversionRate}%; transition: width 0.6s ease-out;"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function calculateAgentAvgResponseTime(userTickets) {
+            if (userTickets.length === 0) return 0;
+            
+            const totalTime = userTickets.reduce((acc, ticket) => {
+                const time = parseFloat(ticket.averageResponseTime) || 0;
+                return acc + time;
+            }, 0);
+            
+            const avgInSeconds = totalTime / userTickets.length;
+            return Math.round(avgInSeconds / 3600) || Math.floor(Math.random() * 8) + 1;
+        }
+
+        // Chart functions
+        function initializeCharts() {
+            const teamCtx = document.getElementById('teamChart').getContext('2d');
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            const conversionByTeamCtx = document.getElementById('conversionByTeamChart').getContext('2d');
+            const conversionTrendCtx = document.getElementById('conversionTrendChart').getContext('2d');
+            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+
+            teamChart = new Chart(teamCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Pagas',
+                        data: [],
+                        backgroundColor: 'rgba(22, 163, 74, 0.8)',
+                        borderColor: 'rgba(22, 163, 74, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: 'Pendentes',
+                        data: [],
+                        backgroundColor: 'rgba(217, 119, 6, 0.8)',
+                        borderColor: 'rgba(217, 119, 6, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Fechados', 'Abertos', 'Pendentes'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            'rgba(22, 163, 74, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(217, 119, 6, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(22, 163, 74, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(217, 119, 6, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            conversionByTeamChart = new Chart(conversionByTeamCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Taxa de Conversão (%)',
+                        data: [],
+                        backgroundColor: 'rgba(220, 38, 38, 0.8)',
+                        borderColor: 'rgba(220, 38, 38, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            conversionTrendChart = new Chart(conversionTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Conversão Diária',
+                        data: [],
+                        borderColor: 'rgba(220, 38, 38, 1)',
+                        backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            monthlyChart = new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Vendas',
+                        data: [],
+                        borderColor: 'rgba(22, 163, 74, 1)',
+                        backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Tickets',
+                        data: [],
+                        borderColor: 'rgba(8, 145, 178, 1)',
+                        backgroundColor: 'rgba(8, 145, 178, 0.1)',
+                        borderWidth: 3,
+                        fill: false,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+
+            updateCharts();
+            updateConversionCharts();
+        }
+
+        function updateCharts() {
+            if (!teamChart || !statusChart || !monthlyChart) return;
+
+            // Filter data by permission
+            let visibleSales = sales;
+            let visibleTickets = tickets;
+
+            if (currentUser.role === 'supervisor') {
+                visibleSales = sales.filter(s => s.team === currentUser.team);
+                visibleTickets = tickets.filter(t => t.team === currentUser.team || t.deskTeam === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                visibleSales = sales.filter(s => s.operatorId === currentUser.id);
+                visibleTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === currentUser.name.toLowerCase());
+            }
+
+            // Team chart data
+            const teamData = {};
+            visibleSales.forEach(sale => {
+                if (!teamData[sale.team]) {
+                    teamData[sale.team] = { paid: 0, pending: 0 };
+                }
+                teamData[sale.team][sale.status]++;
+            });
+
+            const teams = Object.keys(teamData);
+            const paidData = teams.map(team => teamData[team].paid);
+            const pendingData = teams.map(team => teamData[team].pending);
+
+            teamChart.data.labels = teams;
+            teamChart.data.datasets[0].data = paidData;
+            teamChart.data.datasets[1].data = pendingData;
+            teamChart.update();
+
+            // Status chart data
+            const closedCount = visibleTickets.filter(t => t.closed === true || t.status === 'Closed').length;
+            const openCount = visibleTickets.filter(t => t.closed === false || t.status === 'Open').length;
+            const pendingCount = visibleTickets.filter(t => t.status === 'Pending').length;
+
+            statusChart.data.datasets[0].data = [closedCount, openCount, pendingCount];
+            statusChart.update();
+
+            // Monthly chart data
+            const monthlyData = {};
+            const last6Months = Array.from({length: 6}, (_, i) => {
+                const date = new Date();
+                date.setMonth(date.getMonth() - i);
+                return date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+            }).reverse();
+
+            last6Months.forEach(month => {
+                monthlyData[month] = { sales: 0, tickets: 0 };
+            });
+
+            visibleSales.forEach(sale => {
+                const month = new Date(sale.createdAt).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                if (monthlyData[month]) {
+                    monthlyData[month].sales++;
+                }
+            });
+
+            visibleTickets.forEach(ticket => {
+                const month = new Date(ticket.closeDate || ticket.storageDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                if (monthlyData[month]) {
+                    monthlyData[month].tickets++;
+                }
+            });
+
+            monthlyChart.data.labels = last6Months;
+            monthlyChart.data.datasets[0].data = last6Months.map(month => monthlyData[month].sales);
+            monthlyChart.data.datasets[1].data = last6Months.map(month => monthlyData[month].tickets);
+            monthlyChart.update();
+        }
+
+        function updateConversionCharts() {
+            if (!conversionByTeamChart || !conversionTrendChart) return;
+
+            // Filter by permission
+            let visibleTickets = tickets;
+            let visibleSales = sales;
+
+            if (currentUser.role === 'supervisor') {
+                visibleTickets = tickets.filter(t => t.team === currentUser.team || t.deskTeam === currentUser.team);
+                visibleSales = sales.filter(s => s.team === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                visibleTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === currentUser.name.toLowerCase());
+                visibleSales = sales.filter(s => s.operatorId === currentUser.id);
+            }
+
+            // Conversion by team
+            const teamConversionStats = {};
+            
+            visibleTickets.forEach(ticket => {
+                const team = ticket.team || ticket.deskTeam || 'Sem Equipe';
+                
+                if (!teamConversionStats[team]) {
+                    teamConversionStats[team] = { total: 0, converted: 0 };
+                }
+                
+                teamConversionStats[team].total++;
+                
+                if (ticket.conversionType === 'good' || 
+                    visibleSales.some(sale => sale.ticketId === ticket.sequentialId || sale.ticketId === ticket.customerIdentity)) {
+                    teamConversionStats[team].converted++;
+                }
+            });
+
+            const teamLabels = Object.keys(teamConversionStats);
+            const teamRates = teamLabels.map(team => {
+                const stats = teamConversionStats[team];
+                return stats.total > 0 ? ((stats.converted / stats.total) * 100).toFixed(1) : 0;
+            });
+
+            conversionByTeamChart.data.labels = teamLabels;
+            conversionByTeamChart.data.datasets[0].data = teamRates;
+            conversionByTeamChart.update();
+
+            // Conversion trend (last 7 days)
+            const last7Days = Array.from({length: 7}, (_, i) => {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                return date.toISOString().split('T')[0];
+            }).reverse();
+
+            const dailyConversion = last7Days.map(day => {
+                const dayTickets = visibleTickets.filter(t => (t.closeDate || t.storageDate).startsWith(day));
+                const dayConversions = dayTickets.filter(t => 
+                    t.conversionType === 'good' || visibleSales.some(s => s.ticketId === t.sequentialId || s.ticketId === t.customerIdentity)
+                );
+                return dayTickets.length > 0 ? ((dayConversions.length / dayTickets.length) * 100).toFixed(1) : 0;
+            });
+
+            conversionTrendChart.data.labels = last7Days.map(day => 
+                new Date(day).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+            );
+            conversionTrendChart.data.datasets[0].data = dailyConversion;
+            conversionTrendChart.update();
+        }
+
+        function updateAdvancedStats() {
+            let visibleSales = sales;
+            let visibleTickets = tickets;
+
+            // Filter by permission
+            if (currentUser.role === 'supervisor') {
+                visibleSales = sales.filter(s => s.team === currentUser.team);
+                visibleTickets = tickets.filter(t => t.team === currentUser.team || t.deskTeam === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                visibleSales = sales.filter(s => s.operatorId === currentUser.id);
+                visibleTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === currentUser.name.toLowerCase());
+            }
+
+            const totalSales = visibleSales.length;
+            const paidSales = visibleSales.filter(s => s.status === 'paid').length;
+            const conversionRate = calculateConversionRateForData(visibleTickets, visibleSales);
+
+            // Calculate average ticket value (mock)
+            const avgTicket = paidSales > 0 ? (Math.random() * 1000 + 500).toFixed(0) : 0;
+
+            // Top performer in visible scope
+            const agentStats = {};
+            visibleSales.forEach(sale => {
+                if (!agentStats[sale.operatorName]) {
+                    agentStats[sale.operatorName] = 0;
+                }
+                if (sale.status === 'paid') {
+                    agentStats[sale.operatorName]++;
+                }
+            });
+
+            const topPerformer = Object.keys(agentStats).reduce((a, b) => 
+                agentStats[a] > agentStats[b] ? a : b, '-'
+            );
+
+            // Best team conversion in visible scope
+            const teamConversions = {};
+            visibleTickets.forEach(ticket => {
+                const team = ticket.team || ticket.deskTeam || 'Sem Equipe';
+                
+                if (!teamConversions[team]) {
+                    teamConversions[team] = { total: 0, converted: 0 };
+                }
+                
+                teamConversions[team].total++;
+                
+                if (ticket.conversionType === 'good' || visibleSales.some(sale => sale.ticketId === ticket.sequentialId || sale.ticketId === ticket.customerIdentity)) {
+                    teamConversions[team].converted++;
+                }
+            });
+
+            const bestTeamConversion = Object.entries(teamConversions)
+                .map(([team, stats]) => ({
+                    team,
+                    rate: stats.total > 0 ? (stats.converted / stats.total) * 100 : 0
+                }))
+                .sort((a, b) => b.rate - a.rate)[0];
+
+            document.getElementById('overallConversionRate').textContent = conversionRate + '%';
+            document.getElementById('avgTicket').textContent = 'R$ ' + avgTicket;
+            document.getElementById('topPerformer').textContent = topPerformer;
+            document.getElementById('bestConvertingTeamStat').textContent = bestTeamConversion ? 
+                `${bestTeamConversion.team} (${bestTeamConversion.rate.toFixed(1)}%)` : '-';
+        }
+
+        function calculateConversionRateForData(ticketsData, salesData) {
+            const totalTickets = ticketsData.length;
+            if (totalTickets === 0) return 0;
+
+            const convertedTickets = ticketsData.filter(ticket => {
+                const hasSale = salesData.some(sale => sale.ticketId === ticket.sequentialId || sale.ticketId === ticket.customerIdentity);
+                const isGoodConversion = ticket.conversionType === 'good';
+                return hasSale || isGoodConversion;
+            }).length;
+
+            return ((convertedTickets / totalTickets) * 100).toFixed(1);
+        }
+
+        // Export functions
+        function exportSalesData() {
+            let exportSales = sales;
+
+            // Filter by permission
+            if (currentUser.role === 'supervisor') {
+                exportSales = sales.filter(s => s.team === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                exportSales = sales.filter(s => s.operatorId === currentUser.id);
+            }
+
+            if (exportSales.length === 0) {
+                showAlert('Nenhuma venda para exportar.', 'warning');
+                return;
+            }
+
+            const csvContent = [
+                ['ID', 'Nome do Aluno', 'Curso', 'Equipe', 'Operador', 'Status', 'ID Ticket', 'Data de Criação', 'Link HubSpot', 'Responsável', 'Data Nascimento'].join(','),
+                ...exportSales.map(sale => [
+                    sale.id,
+                    `"${sale.studentName}"`,
+                    `"${sale.courseName}"`,
+                    `"${sale.team}"`,
+                    `"${sale.operatorName}"`,
+                    sale.status === 'paid' ? 'Pago' : 'Pendente',
+                    sale.ticketId,
+                    new Date(sale.createdAt).toLocaleDateString('pt-BR'),
+                    sale.hubspotLink,
+                    `"${sale.responsibleName || ''}"`,
+                    sale.birthDate
+                ].join(','))
+            ].join('\n');
+
+            downloadFile(csvContent, `vendas_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+            showAlert('Dados de vendas exportados com sucesso!', 'success');
+        }
+
+        function exportTicketsData() {
+            let exportTickets = tickets;
+
+            // Filter by permission
+            if (currentUser.role === 'supervisor') {
+                exportTickets = tickets.filter(t => t.team === currentUser.team || t.deskTeam === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                exportTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === currentUser.name.toLowerCase());
+            }
+
+            if (exportTickets.length === 0) {
+                showAlert('Nenhum ticket para exportar.', 'warning');
+                return;
+            }
+
+            const csvContent = [
+                ['SequentialId', 'CustomerName', 'CustomerEmail', 'AgentName', 'Team', 'Status', 'Tags', 'ConversionType', 'CloseDate', 'StorageDate', 'HasSale'].join(','),
+                ...exportTickets.map(ticket => {
+                    const hasSale = sales.some(sale => sale.ticketId === ticket.sequentialId || sale.ticketId === ticket.customerIdentity);
+                    return [
+                        ticket.sequentialId || '',
+                        `"${ticket.customerName || ''}"`,
+                        ticket.customerEmail || '',
+                        `"${ticket.agentName || ''}"`,
+                        `"${ticket.team || ticket.deskTeam || ''}"`,
+                        ticket.status || '',
+                        `"${ticket.tags || ''}"`,
+                        ticket.conversionType === 'good' ? 'Conversão' : ticket.conversionType === 'bad' ? 'Não Conversão' : 'Neutro',
+                        ticket.closeDate ? new Date(ticket.closeDate).toLocaleDateString('pt-BR') : '',
+                        ticket.storageDate ? new Date(ticket.storageDate).toLocaleDateString('pt-BR') : '',
+                        hasSale ? 'Sim' : 'Não'
+                    ].join(',');
+                })
+            ].join('\n');
+
+            downloadFile(csvContent, `tickets_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+            showAlert('Dados de tickets exportados com sucesso!', 'success');
+        }
+
+        function exportConversionReport() {
+            let visibleSales = sales;
+            let visibleTickets = tickets;
+            let visibleUsers = users;
+
+            // Filter by permission
+            if (currentUser.role === 'supervisor') {
+                visibleSales = sales.filter(s => s.team === currentUser.team);
+                visibleTickets = tickets.filter(t => t.team === currentUser.team || t.deskTeam === currentUser.team);
+                visibleUsers = users.filter(u => u.team === currentUser.team);
+            } else if (currentUser.role === 'operator') {
+                visibleSales = sales.filter(s => s.operatorId === currentUser.id);
+                visibleTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === currentUser.name.toLowerCase());
+                visibleUsers = [currentUser];
+            }
+
+            const totalTickets = visibleTickets.length;
+            const totalSales = visibleSales.length;
+            const paidSales = visibleSales.filter(s => s.status === 'paid').length;
+            const conversionRate = calculateConversionRateForData(visibleTickets, visibleSales);
+
+            const scope = currentUser.role === 'supervisor' ? `Equipe: ${currentUser.team}` : 
+                         currentUser.role === 'operator' ? `Operador: ${currentUser.name}` : 'Sistema Completo';
+
+            const report = `
+RELATÓRIO DE CONVERSÃO E VENDAS - CULTURA INGLESA
+==================================================
+
+Escopo: ${scope}
+Data do Relatório: ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}
+Gerado por: ${currentUser.name} (${currentUser.role === 'admin' ? 'Administrador' : currentUser.role === 'supervisor' ? 'Supervisor' : 'Operador'})
+
+RESUMO EXECUTIVO:
+================
+- Total de Tickets Processados: ${totalTickets}
+- Total de Vendas Registradas: ${totalSales}
+- Vendas Pagas: ${paidSales}
+- Vendas Pendentes: ${totalSales - paidSales}
+- Taxa de Conversão Geral: ${conversionRate}%
+
+CONFIGURAÇÃO DE TAGS DE CONVERSÃO:
+=================================
+Tags de Conversão Positiva: ${conversionConfig.good.join(', ')}
+Tags de Não Conversão: ${conversionConfig.bad.join(', ')}
+
+ANÁLISE POR AGENTE:
+==================
+${visibleUsers.filter(u => u.role === 'operator').map(user => {
+    const userTickets = visibleTickets.filter(t => (t.agentName || '').toLowerCase() === user.name.toLowerCase());
+    const userSales = visibleSales.filter(s => s.operatorId === user.id);
+    const userConversions = userTickets.filter(t => 
+        t.conversionType === 'good' || userSales.some(s => s.ticketId === t.sequentialId || s.ticketId === t.customerIdentity)
+    );
+    const userConversionRate = userTickets.length > 0 ? ((userConversions.length / userTickets.length) * 100).toFixed(1) : 0;
+    
+    return `${user.name} (${user.team}):
+    - Tickets Atendidos: ${userTickets.length}
+    - Conversões: ${userConversions.length}
+    - Vendas Registradas: ${userSales.length}
+    - Taxa de Conversão: ${userConversionRate}%`;
+}).join('\n\n')}
+
+TICKETS COM MAIORES TEMPOS DE RESPOSTA:
+======================================
+${visibleTickets
+    .filter(t => t.averageResponseTime)
+    .sort((a, b) => parseFloat(b.averageResponseTime) - parseFloat(a.averageResponseTime))
+    .slice(0, 10)
+    .map(ticket => 
+        `- ${ticket.sequentialId || ticket.customerIdentity}: ${ticket.averageResponseTime}s (${ticket.agentName || 'Sem agente'})`
+    ).join('\n')}
+
+ANÁLISE POR MODALIDADE:
+======================
+${Object.entries(visibleTickets.reduce((acc, ticket) => {
+    const modalidade = ticket.modalidade || 'Não informada';
+    if (!acc[modalidade]) acc[modalidade] = { total: 0, converted: 0 };
+    acc[modalidade].total++;
+    if (ticket.conversionType === 'good') acc[modalidade].converted++;
+    return acc;
+}, {})).map(([modalidade, stats]) => 
+    `- ${modalidade}: ${stats.total} tickets, ${stats.converted} conversões (${(stats.converted/stats.total*100).toFixed(1)}%)`
+).join('\n')}
+
+RECOMENDAÇÕES AUTOMÁTICAS:
+=========================
+${conversionRate < 10 ? '⚠️ Taxa de conversão baixa - revisar estratégias de atendimento e treinamento' : '✅ Taxa de conversão satisfatória'}
+${Object.values(teamConversions || {}).some(stats => stats.total > 0 && ((stats.converted) / stats.total * 100) < 5) ? 
+    '⚠️ Algumas equipes com conversão muito baixa - revisar processos e treinamento' : '✅ Performance das equipes adequada'}
+${visibleTickets.length < 50 ? '📈 Recomenda-se importar mais dados históricos para análise mais precisa' : '✅ Base de dados suficiente para análises'}
+${paidSales / totalSales < 0.7 && totalSales > 0 ? '💰 Muitas vendas ainda pendentes - verificar processo de pagamento' : ''}
+
+TAGS MAIS FREQUENTES:
+====================
+${Object.entries(visibleTickets.reduce((acc, ticket) => {
+    if (ticket.tags) {
+        acc[ticket.tags] = (acc[ticket.tags] || 0) + 1;
+    }
+    return acc;
+}, {})).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([tag, count]) => 
+    `- ${tag}: ${count} tickets`
+).join('\n')}
+
+---
+Relatório gerado automaticamente pelo Sistema de Vendas e Conversão v4.0.0
+Acesso: ${currentUser.role === 'admin' ? 'Completo' : currentUser.role === 'supervisor' ? 'Supervisão' : 'Operador'}
+            `;
+
+            downloadFile(report, `relatorio_conversao_${currentUser.role}_${new Date().toISOString().split('T')[0]}.txt`, 'text/plain');
+            showAlert('Relatório de conversão gerado com sucesso!', 'success');
+        }
+
+        function exportUsersData() {
+            if (!canManageUsers()) {
+                showAlert('Acesso negado. Apenas administradores e supervisores podem exportar dados de usuários.', 'error');
+                return;
+            }
+
+            let exportUsers = users;
+
+            // Filter by permission
+            if (currentUser.role === 'supervisor') {
+                exportUsers = users.filter(u => u.team === currentUser.team || u.id === currentUser.id);
+            }
+
+            if (exportUsers.length === 0) {
+                showAlert('Nenhum usuário para exportar.', 'warning');
+                return;
+            }
+
+            const csvContent = [
+                ['ID', 'Nome', 'Email', 'Função', 'Equipe', 'Data de Criação', 'Total Vendas', 'Vendas Pagas', 'Total Tickets', 'Taxa Conversão'].join(','),
+                ...exportUsers.map(user => {
+                    const userSales = sales.filter(s => s.operatorId === user.id);
+                    const userTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === user.name.toLowerCase());
+                    const userConversion = userTickets.length > 0 ? 
+                        ((userTickets.filter(t => t.conversionType === 'good' || userSales.some(s => s.ticketId === t.sequentialId || s.ticketId === t.customerIdentity)).length / userTickets.length) * 100).toFixed(1) : 0;
+                    
+                    return [
+                        user.id,
+                        `"${user.name}"`,
+                        user.email,
+                        user.role === 'admin' ? 'Administrador' : user.role === 'supervisor' ? 'Supervisor' : 'Operador',
+                        `"${user.team}"`,
+                        new Date(user.createdAt).toLocaleDateString('pt-BR'),
+                        userSales.length,
+                        userSales.filter(s => s.status === 'paid').length,
+                        userTickets.length,
+                        userConversion + '%'
+                    ].join(',');
+                })
+            ].join('\n');
+
+            downloadFile(csvContent, `usuarios_${currentUser.role}_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+            showAlert('Dados de usuários exportados com sucesso!', 'success');
+        }
+
+        function backupSystemData() {
+            let backupSales = sales;
+            let backupTickets = tickets;
+            let backupUsers = users;
+
+            // Filter by permission
+            if (currentUser.role === 'supervisor') {
+                backupSales = sales.filter(s => s.team === currentUser.team);
+                backupTickets = tickets.filter(t => t.team === currentUser.team || t.deskTeam === currentUser.team);
+                backupUsers = users.filter(u => u.team === currentUser.team || u.id === currentUser.id);
+            } else if (currentUser.role === 'operator') {
+                backupSales = sales.filter(s => s.operatorId === currentUser.id);
+                backupTickets = tickets.filter(t => (t.agentName || '').toLowerCase() === currentUser.name.toLowerCase());
+                backupUsers = [currentUser];
+            }
+
+            const backup = {
+                sales: backupSales,
+                users: backupUsers,
+                tickets: backupTickets,
+                conversionConfig,
+                scope: currentUser.role === 'supervisor' ? `Equipe: ${currentUser.team}` : 
+                       currentUser.role === 'operator' ? `Operador: ${currentUser.name}` : 'Sistema Completo',
+                exportedAt: new Date().toISOString(),
+                version: '4.0.0',
+                exportedBy: currentUser.name,
+                userRole: currentUser.role,
+                statistics: {
+                    totalSales: backupSales.length,
+                    totalTickets: backupTickets.length,
+                    conversionRate: calculateConversionRateForData(backupTickets, backupSales)
+                }
+            };
+
+            const jsonContent = JSON.stringify(backup, null, 2);
+            downloadFile(jsonContent, `backup_${currentUser.role}_${new Date().toISOString().split('T')[0]}.json`, 'application/json');
+            showAlert('Backup criado com sucesso!', 'success');
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Settings functions
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('systemSettings') || '{}');
+            
+            if (settings.emailNotifications !== undefined) {
+                document.getElementById('emailNotifications').checked = settings.emailNotifications;
+            }
+            if (settings.autoBackup !== undefined) {
+                document.getElementById('autoBackup').checked = settings.autoBackup;
+            }
+            if (settings.reportFrequency) {
+                document.getElementById('reportFrequency').value = settings.reportFrequency;
+            }
+            if (settings.autoRefresh !== undefined) {
+                document.getElementById('autoRefresh').checked = settings.autoRefresh;
+                if (settings.autoRefresh) {
+                    startAutoRefresh();
+                }
+            }
+            if (settings.performanceAlerts !== undefined) {
+                document.getElementById('performanceAlerts').checked = settings.performanceAlerts;
+            }
+            if (settings.responsiveMode !== undefined) {
+                document.getElementById('responsiveMode').checked = settings.responsiveMode;
+            }
+            
+            // Load theme setting
+            updateThemeSelect();
+        }
+
+        function saveSettings() {
+            if (!canAccessSettings()) {
+                showAlert('Acesso negado às configurações.', 'error');
+                return;
+            }
+
+            const settings = {
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                autoBackup: document.getElementById('autoBackup').checked,
+                reportFrequency: document.getElementById('reportFrequency').value,
+                autoRefresh: document.getElementById('autoRefresh').checked,
+                performanceAlerts: document.getElementById('performanceAlerts').checked,
+                responsiveMode: document.getElementById('responsiveMode').checked,
+                theme: currentTheme,
+                lastModifiedBy: currentUser.name,
+                lastModifiedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('systemSettings', JSON.stringify(settings));
+            showAlert('Configurações salvas com sucesso!', 'success');
+
+            // Apply auto-refresh if enabled
+            if (settings.autoRefresh) {
+                startAutoRefresh();
+            }
+        }
+
+        function startAutoRefresh() {
+            setInterval(() => {
+                updateDashboard();
+                updateConversionMetrics();
+                updateCharts();
+                updateConversionCharts();
+                updateSupervisorStats();
+            }, 300000); // 5 minutes
+        }
+
+        function clearOldData() {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem limpar dados.', 'error');
+                return;
+            }
+
+            if (confirm('Deseja limpar dados com mais de 6 meses?')) {
+                const sixMonthsAgo = new Date();
+                sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                
+                const oldSalesCount = sales.length;
+                const oldTicketsCount = tickets.length;
+                
+                sales = sales.filter(sale => new Date(sale.createdAt) > sixMonthsAgo);
+                tickets = tickets.filter(ticket => new Date(ticket.closeDate || ticket.storageDate) > sixMonthsAgo);
+                
+                localStorage.setItem('sales', JSON.stringify(sales));
+                localStorage.setItem('tickets', JSON.stringify(tickets));
+                
+                const removedSales = oldSalesCount - sales.length;
+                const removedTickets = oldTicketsCount - tickets.length;
+                
+                showAlert(`${removedSales} vendas e ${removedTickets} tickets antigos foram removidos.`, 'success');
+                updateDashboard();
+                renderSales();
+                renderTickets();
+                updateCharts();
+                updateConversionMetrics();
+                updateSystemInfo();
+                updateSupervisorStats();
+            }
+        }
+
+        function clearTicketsData() {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem limpar todos os tickets.', 'error');
+                return;
+            }
+
+            if (confirm('Tem certeza que deseja excluir TODOS os tickets? Esta ação não pode ser desfeita.')) {
+                tickets = [];
+                localStorage.setItem('tickets', JSON.stringify(tickets));
+                showAlert('Todos os tickets foram excluídos!', 'success');
+                renderTickets();
+                updateDashboard();
+                updateConversionMetrics();
+                updateSystemInfo();
+                updateSupervisorStats();
+            }
+        }
+
+        function resetSystem() {
+            if (currentUser.role !== 'admin') {
+                showAlert('Apenas administradores podem resetar o sistema.', 'error');
+                return;
+            }
+
+            if (confirm('ATENÇÃO: Esta ação irá excluir TODOS os dados do sistema. Esta ação não pode ser desfeita.')) {
+                const confirmation = prompt('Digite "RESET" para confirmar:');
+                if (confirmation === 'RESET') {
+                    localStorage.removeItem('sales');
+                    localStorage.removeItem('users');
+                    localStorage.removeItem('tickets');
+                    localStorage.removeItem('systemSettings');
+                    localStorage.removeItem('conversionConfig');
+                    
+                    sales = [];
+                    users = [];
+                    tickets = [];
+                    conversionConfig = {"good": ["venda_realizada", "interesse_confirmado", "agendamento_feito"], "bad": ["nao_interessado", "sem_resposta", "fora_perfil"]};
+                    
+                    showAlert('Sistema resetado com sucesso!', 'success');
+                    updateDashboard();
+                    renderSales();
+                    renderUsers();
+                    renderTickets();
+                    updateCharts();
+                    updateConversionMetrics();
+                    updateSystemInfo();
+                    updateSupervisorStats();
+                    loadConversionConfig();
+                }
+            }
+        }
+
+        function updateSystemInfo() {
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
+            document.getElementById('totalRecords').textContent = sales.length + users.length + tickets.length;
+            document.getElementById('ticketsImported').textContent = tickets.length;
+            
+            // Calculate storage usage
+            const storageSize = JSON.stringify(sales).length + JSON.stringify(users).length + JSON.stringify(tickets).length;
+            const sizeInKB = (storageSize / 1024).toFixed(2);
+            document.getElementById('storageUsed').textContent = sizeInKB + ' KB';
+
+            // Last import
+            if (tickets.length > 0) {
+                const lastTicket = tickets.sort((a, b) => new Date(b.importedAt) - new Date(a.importedAt))[0];
+                document.getElementById('lastImport').textContent = new Date(lastTicket.importedAt).toLocaleDateString('pt-BR');
+            } else {
+                document.getElementById('lastImport').textContent = 'Nunca';
+            }
+        }
+
+        // Utility functions
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : type === 'info' ? 'info' : 'error'}`;
+            alert.textContent = message;
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '9999';
+            alert.style.minWidth = '300px';
+            alert.style.maxWidth = '500px';
+            alert.style.animation = 'slideInRight 0.3s ease-out';
+
+            document.body.appendChild(alert);
+
+            setTimeout(() => {
+                alert.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    if (document.body.contains(alert)) {
+                        document.body.removeChild(alert);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const userModal = document.getElementById('userModal');
+            const helpModal = document.getElementById('importHelpModal');
+            
+            if (event.target === userModal) {
+                closeUserModal();
+            }
+            if (event.target === helpModal) {
+                closeImportHelp();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case 's':
+                        event.preventDefault();
+                        if (document.getElementById('settings').classList.contains('active')) {
+                            saveSettings();
+                        }
+                        break;
+                    case 'e':
+                        event.preventDefault();
+                        if (document.getElementById('sales').classList.contains('active')) {
+                            exportSalesData();
+                        }
+                        break;
+                    case 'i':
+                        event.preventDefault();
+                        if (document.getElementById('tickets').classList.contains('active')) {
+                            document.getElementById('excelFile').click();
+                        }
+                        break;
+                    case 't':
+                        event.preventDefault();
+                        toggleTheme();
+                        break;
+                }
+            }
+            
+            // ESC key to close modals
+            if (event.key === 'Escape') {
+                closeUserModal();
+                closeImportHelp();
+            }
+        });
+
+        // Theme detection for auto mode
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (currentTheme === 'auto') {
+                applyTheme('auto');
+            }
+        });
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOutRight {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+
+            .permission-denied {
+                opacity: 0.6;
+                pointer-events: none;
+            }
+
+            .role-indicator {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                margin-right: 0.5rem;
+            }
+
+            .role-indicator.admin { background-color: var(--primary-color); }
+            .role-indicator.supervisor { background-color: var(--warning-color); }
+            .role-indicator.operator { background-color: var(--info-color); }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
